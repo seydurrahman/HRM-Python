@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>All Employees</h2>
+        <a href="{% url 'employees:create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Employee
+        </a>
+    </div>
+    
+    {% if employees %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td>{{ emp.employee_id }}</td>
+                        <td>
+                            {% if emp.photo %}
+                                <img src="{{ emp.photo.url }}" alt="{{ emp.user.get_full_name }}" 
+                                     class="rounded-circle me-2" width="32" height="32">
+                            {% endif %}
+                            {{ emp.user.get_full_name }}
+                        </td>
+                        <td>{{ emp.user.email }}</td>
+                        <td>{{ emp.department.name }}</td>
+                        <td>{{ emp.designation.name }}</td>
+                        <td>
+                            {% if emp.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'employees:update' emp.id %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'employees:delete' emp.id %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> No employees found.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

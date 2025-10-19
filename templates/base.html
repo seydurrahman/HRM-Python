@@ -1,0 +1,323 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HRM System{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: #0d6efd;
+            color: #fff;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 0;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .dropicon-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    color: #fff !important;
+    padding: 10px 20px !important;
+    font-size: 15px !important;
+    text-decoration: none;
+    width: 100%;
+}
+
+.dropicon-link .nav-text {
+    display: flex;
+    align-items: center;
+}
+
+.reports-link i {
+    vertical-align: middle;
+}
+
+
+        /* Submenu styling (Administration section) */
+        .submenu {
+            background-color: rgba(255, 255, 255, 0.08);
+            margin-left: 15px;
+            border-left: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .submenu a {
+            display: block;
+            padding: 8px 30px;
+            font-size: 14px;
+            color: #f8f9fa;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .submenu a::before {
+            content: "-";
+            position: absolute;
+            left: 15px;
+            color: #ffffffb3;
+        }
+
+        .submenu a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* Main content */
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            margin-top: auto;
+        }
+
+        /* Mobile responsive sidebar */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                z-index: 1050;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: inline-block;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                background-color: #0d6efd;
+                border: none;
+                color: #fff;
+                font-size: 20px;
+                border-radius: 4px;
+                padding: 8px 10px;
+                z-index: 1100;
+            }
+        }
+
+        @media (min-width: 993px) {
+            .sidebar-toggle {
+                display: none;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="main-wrapper">
+
+        <!-- Sidebar -->
+        <div class="sidebar d-flex flex-column p-3" id="sidebar">
+            <a href="{% url 'dashboard:dashboard' %}" class="d-flex align-items-center mb-3 text-white text-decoration-none">
+                <i class="fas fa-building fa-lg me-2"></i>
+                <span class="fs-4">HRM System</span>
+            </a>
+            <hr>
+
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard' %}" class="nav-link text-white">
+                        <i class="fas fa-tachometer-alt "></i> Dashboard
+                    </a>
+                </li>
+
+                
+
+                <li>
+                    <a href="{% url 'employees:list' %}" class="nav-link text-white">
+                        <i class="fas fa-users"></i> Employees
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'attendance:list' %}" class="nav-link text-white">
+                        <i class="fas fa-clock"></i> Attendance
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'leave_management:list' %}" class="nav-link text-white">
+                        <i class="fas fa-calendar-days"></i> Leave
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'payroll:list' %}" class="nav-link text-white">
+                        <i class="fas fa-money-bill"></i> Payroll
+                    </a>
+                </li>
+                {% if user.is_hr or user.is_admin %}
+                <li>
+                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" aria-expanded="false" aria-controls="reportsSubmenu">
+                        <span class="nav-text"><i class="fas fa-file-alt"></i> Reports</span> <i class="fas fa-chevron-down float-end"></i>
+                    </a>
+                    <div class="collapse submenu" id="reportsSubmenu">
+                        <a href="#">Daily Attendance</a>
+                        <a href="#">Department wise Attendance</a>
+                        <a href="#">OT Budgets</a>
+                        <a href="#">Overall Status</a>
+                    </div>
+                </li>
+                {% endif %}
+                {% if user.is_hr or user.is_admin %}
+                <li>
+                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#adminSubmenu" role="button" aria-expanded="false" aria-controls="adminSubmenu">
+                        <span class="nav-text"><i class="fas fa-cog"></i> Administration</span> <i class="fas fa-chevron-down float-end"></i>
+                    </a>
+                    <div class="collapse submenu" id="adminSubmenu">
+                        <a href="/admin/">Admin Panel</a>
+                        <a href="#">Departments</a>
+                        <a href="#">Designations</a>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+
+            <hr>
+
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle fa-lg me-2"></i>
+                    <strong>{{ user.get_full_name }}</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-key"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="post" action="{% url 'accounts:logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        © 2025 HRM System. All rights reserved.
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+    <script>
+        // Sidebar toggle for mobile
+        document.getElementById("sidebarToggle").addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("show");
+        });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('experience-container');
+    const addBtn = document.getElementById('add-experience');
+
+    addBtn.addEventListener('click', () => {
+        const firstRow = container.querySelector('.experience-row');
+        const newRow = firstRow.cloneNode(true);
+
+        // Clear input values
+        newRow.querySelectorAll('input, select, textarea').forEach(field => field.value = '');
+
+        // Add remove button only to new row
+        const removeDiv = document.createElement('div');
+        removeDiv.className = 'col-md-12 mb-3';
+        removeDiv.innerHTML = `<button type="button" class="btn btn-danger remove-row">-</button>`;
+        newRow.appendChild(removeDiv);
+
+        container.appendChild(newRow);
+    });
+
+    // Remove a row
+    container.addEventListener('click', function(e) {
+        if(e.target.classList.contains('remove-row')) {
+            e.target.closest('.experience-row').remove();
+        }
+    });
+});
+</script>
+
+
+
+
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

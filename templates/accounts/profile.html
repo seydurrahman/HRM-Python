@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - HRM System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+                <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-key"></i> Change Password
+                </a>
+            </div>
+
+            <div class="row">
+                <!-- User Information Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-5x text-primary"></i>
+                            </div>
+                            <h4>{{ user.get_full_name }}</h4>
+                            <p class="text-muted">{{ user.email }}</p>
+                            
+                            {% if user.role == 'ADMIN' %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% elif user.role == 'HR' %}
+                                <span class="badge bg-warning">HR Manager</span>
+                            {% elif user.role == 'MANAGER' %}
+                                <span class="badge bg-info">Manager</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Employee</span>
+                            {% endif %}
+                            
+                            <hr>
+                            
+                            <div class="text-start">
+                                <p class="mb-2">
+                                    <i class="fas fa-calendar"></i> 
+                                    <strong>Joined:</strong> {{ user.date_joined|date:"d M Y" }}
+                                </p>
+                                {% if user.phone %}
+                                <p class="mb-2">
+                                    <i class="fas fa-phone"></i> 
+                                    <strong>Phone:</strong> {{ user.phone }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Information Card -->
+                <div class="col-md-8 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-id-card"></i> Employee Information</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if employee %}
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Employee ID:</strong></div>
+                                    <div class="col-sm-8">{{ employee.employee_id }}</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Department:</strong></div>
+                                    <div class="col-sm-8">{{ employee.department.name }}</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Designation:</strong></div>
+                                    <div class="col-sm-8">{{ employee.designation.title }}</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Employment Type:</strong></div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-info">{{ employee.get_employment_type_display }}</span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Date of Joining:</strong></div>
+                                    <div class="col-sm-8">{{ employee.date_of_joining|date:"d F Y" }}</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Mobile Number:</strong></div>
+                                    <div class="col-sm-8">{{ employee.mobile_number }}</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Status:</strong></div>
+                                    <div class="col-sm-8">
+                                        {% if employee.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if employee.reporting_manager %}
+                                <div class="row mb-3">
+                                    <div class="col-sm-4"><strong>Reporting Manager:</strong></div>
+                                    <div class="col-sm-8">
+                                        {{ employee.reporting_manager.user.get_full_name }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Employee profile not created yet. Please contact HR.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    {% if employee %}
+                    <div class="card shadow mt-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-user"></i> Personal Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Date of Birth:</strong></div>
+                                <div class="col-sm-8">{{ employee.date_of_birth|date:"d F Y" }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Gender:</strong></div>
+                                <div class="col-sm-8">{{ employee.get_gender_display }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Marital Status:</strong></div>
+                                <div class="col-sm-8">{{ employee.get_marital_status_display }}</div>
+                            </div>
+                            {% if employee.blood_group %}
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Blood Group:</strong></div>
+                                <div class="col-sm-8">{{ employee.blood_group }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Present Address:</strong></div>
+                                <div class="col-sm-8">{{ employee.present_address }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="card shadow mt-4">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-phone-alt"></i> Emergency Contact</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Contact Name:</strong></div>
+                                <div class="col-sm-8">{{ employee.emergency_contact_name }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Contact Number:</strong></div>
+                                <div class="col-sm-8">{{ employee.emergency_contact_number }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Relationship:</strong></div>
+                                <div class="col-sm-8">{{ employee.emergency_contact_relation }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
