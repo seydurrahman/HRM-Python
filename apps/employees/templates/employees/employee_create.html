@@ -46,9 +46,9 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="contact-tab"
+              id="offical_info-tab"
               data-bs-toggle="pill"
-              data-bs-target="#contact"
+              data-bs-target="#official_info"
               type="button"
               role="tab"
             >
@@ -58,9 +58,9 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="employment-tab"
+              id="job_experience-tab"
               data-bs-toggle="pill"
-              data-bs-target="#employment"
+              data-bs-target="#job_experience"
               type="button"
               role="tab"
             >
@@ -70,9 +70,9 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="bank-tab"
+              id="salary_info-tab"
               data-bs-toggle="pill"
-              data-bs-target="#bank"
+              data-bs-target="#salary_info"
               type="button"
               role="tab"
             >
@@ -106,9 +106,9 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="bank-tab"
+              id="training-tab"
               data-bs-toggle="pill"
-              data-bs-target="#bank"
+              data-bs-target="#training"
               type="button"
               role="tab"
             >
@@ -458,7 +458,7 @@
           </div>
 
           <!-- ========== OFFICIAL INFO TAB ========== -->
-          <div class="tab-pane fade" id="contact" role="tabpanel">
+          <div class="tab-pane fade" id="official_info" role="tabpanel">
             <div class="section-title mb-3"><h5>Official Information</h5></div>
             <div class="row">
               <div class="col-md-4 mb-3">
@@ -615,7 +615,7 @@
           </div>
 
           <!-- ========== JOB EXPERIENCE TAB ========== -->
-          <div class="tab-pane fade" id="employment" role="tabpanel">
+          <div class="tab-pane fade" id="job_experience" role="tabpanel">
             <div class="section-title mb-3"><h5>Job Experience</h5></div>
             <div id="experience-container">
             <div class="row experience-row align-items-end">
@@ -629,30 +629,270 @@
             <div class="col-md-4 mb-3">{{ form.experienced_certificate.label_tag }} {{ form.experienced_certificate }}</div>
             <div class="col-md-4 mb-3">{{ form.remarks.label_tag }} {{ form.remarks }}</div>
             </div>
-    </div>
+        </div>
 
-    <div class="mb-3">
+        <div class="mb-3">
         <button type="button" id="add-experience" class="btn btn-success">+</button>
-    </div>
+        </div>
            
           </div>
 
-          <!-- ========== Salary Policy TAB ========== -->
-          <div class="tab-pane fade" id="bank" role="tabpanel">
+          <!-- ========== Salary Info TAB ========== -->
+          <div class="tab-pane fade" id="salary_info" role="tabpanel">
             <div class="section-title mb-3"><h5>Salary Policy</h5></div>
             <div class="row">
               <div class="col-md-4 mb-3">
-                <label for="{{ form.date_of_joining.id_for_label }}">Salary Policy(JD)</label>{{ form.date_of_joining }}
+                <label for="{{ form.date_of_joining.id_for_label }}">Effective Date(JD)</label>{{ form.date_of_joining }}
               </div>
               <div class="col-md-4 mb-3">
-                {{ form.bank_account_number.label_tag }} {{form.bank_account_number }}
+                {{ form.salary_policy.label_tag }} {{form.salary_policy }}
               </div>
               <div class="col-md-4 mb-3">
-                {{ form.bank_branch.label_tag }} {{ form.bank_branch }}
+                {{ form.gross_salary.label_tag }} {{ form.gross_salary }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.basic_salary.label_tag }} {{ form.basic_salary }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.house_rent.label_tag }} {{ form.house_rent }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.transport_allowance.label_tag }} {{ form.transport_allowance }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.mobile_bill.label_tag }} {{ form.mobile_bill }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.food_allowance.label_tag }} {{ form.food_allowance }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.medical_allowance.label_tag }} {{ form.medical_allowance }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.other_conveyence.label_tag }} {{ form.other_conveyence }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.attendance_bonus.label_tag }} {{ form.attendance_bonus }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.tax_deduction.label_tag }} {{ form.tax_deduction }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.insurance.label_tag }} {{ form.insurance }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.stamp.label_tag }} {{ form.stamp }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.salary_mode.label_tag }} {{ form.salary_mode }}
+              </div>
+              <div class="col-md-4 mb-3">
+                {{ form.tin_number.label_tag }} {{ form.tin_number }}
+              </div>
+              <div
+                class="d-flex justify-content-center align-items-center col-md-4 mb-3"
+              >
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.pF_applicable|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.pF_applicable.id_for_label }}"
+                  >
+                    PF Applicable
+                  </label>
+                </div>
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.late_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.late_deduct.id_for_label }}"
+                  >
+                    Late Deduct
+                  </label>
+                </div>
+              </div>
+              <div
+                class="d-flex justify-content-center align-items-center col-md-4 mb-3"
+              >
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Transport Deduct
+                  </label>
+                </div>
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.food_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.food_deduct.id_for_label }}"
+                  >
+                    Food Deduct
+                  </label>
+                </div>
               </div>
             </div>
           </div>
 
+
+          <!-- ========== Educations info TAB ========== -->
+
+          <div class="tab-pane fade" id="education" role="tabpanel">
+            <div class="section-title mb-3"><h5>Educations</h5></div>
+
+            <div id="educations-container">
+              <!-- first row (template row) -->
+              <div class="row educations-row align-items-end">
+                <div class="col-md-4 mb-3">{{ form.degree_Name.label_tag }} {{ form.degree_Name }}</div>
+                <div class="col-md-4 mb-3">{{ form.institue.label_tag }} {{ form.institue }}</div>
+                <div class="col-md-4 mb-3">{{ form.board.label_tag }} {{ form.board }}</div>
+                <div class="col-md-4 mb-3">{{ form.subject.label_tag }} {{ form.subject }}</div>
+                <div class="col-md-4 mb-3">{{ form.passing_year.label_tag }} {{ form.passing_year }}</div>
+                <div class="col-md-4 mb-3">{{ form.result.label_tag }} {{ form.result }}</div>
+                <div class="col-md-4 mb-3">{{ form.certificate.label_tag }} {{ form.certificate }}</div>
+                <!-- Note: first row should NOT include a remove button -->
+              </div>
+          </div>
+            <div class="mb-3">
+              <!-- new add button for education -->
+              <button type="button" id="add-education" class="btn btn-success">+</button>
+            </div>
+          </div>
+
+
+          <!-- ========== Leave Info ============ -->
+           <div class="tab-pane fade" id="leave" role="tabpanel">
+            <div class="section-title mb-3"><h5>Leave Info</h5></div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="{{ form.date_of_joining.id_for_label }}">Effective Date(JD)</label>{{ form.date_of_joining }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Sick Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Casual Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Earn Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Maternity Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Parental Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Annual Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Specail Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Compensatory Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-check me-3 d-flex align-items-center">
+                  {{ form.transport_deduct|add_class:"form-check-input mt-0 me-2"}}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.transport_deduct.id_for_label }}"
+                  >
+                    Unpaid Leave
+                  </label>
+                </div>
+                {{form.salary_policy }}
+              </div>
+
+            </div>
+            </div>
+
+            
+
+      
           <!-- ========== STATUS TAB ========== -->
           <div class="tab-pane fade" id="status" role="tabpanel">
             <div class="section-title mb-3"><h5>Employment Status</h5></div>
@@ -672,6 +912,30 @@
             </div>
           </div>
         </div>
+
+        <!-- ========== Trainig & certificate ======= -->
+          <div class="tab-pane fade" id="training" role="tabpanel">
+            <div class="section-title mb-3"><h5>Training & Certificate</h5></div>
+
+            {% comment %} <div id="training-container">
+              <!-- first row (template row) -->
+              <div class="row training-row align-items-end">
+                <div class="col-md-4 mb-3">{{ form.training_name.label_tag }} {{ form.training_name }}</div>
+                <div class="col-md-4 mb-3">{{ form.institue_name.label_tag }} {{ form.institue_name }}</div>
+                <div class="col-md-4 mb-3">{{ form.duration_Month.label_tag }} {{ form.duration_Month }}</div>
+                <div class="col-md-4 mb-3">{{ form.score.label_tag }} {{ form.score }}</div>
+                <div class="col-md-4 mb-3">{{ form.remarks.label_tag }} {{ form.remarks }}</div>
+                <div class="col-md-4 mb-3">{{ form.certificate.label_tag }} {{ form.certificate }}</div>
+                <!-- Note: first row should NOT include a remove button -->
+              </div>
+            </div> {% endcomment %}
+
+            <div class="mb-3">
+              <!-- new add button for education -->
+              <button type="button" id="add-training" class="btn btn-success">+</button>
+            </div>
+          </div>
+
 
         <!-- ========== BUTTONS ========== -->
         <div class="row mt-4">

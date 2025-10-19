@@ -284,38 +284,92 @@
             document.getElementById("sidebar").classList.toggle("show");
         });
     </script>
+
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('experience-container');
-    const addBtn = document.getElementById('add-experience');
+
+  /**
+   * Generic function to enable cloning rows inside a container.
+   * - addButtonSelector: selector for the "+ add" button
+   * - containerSelector: selector of the container which holds rows
+   * - rowSelector: selector of the single row to clone inside container
+   */
+  function enableDynamicRows(addButtonSelector, containerSelector, rowSelector) {
+    const addBtn = document.querySelector(addButtonSelector);
+    const container = document.querySelector(containerSelector);
+
+    if (!addBtn || !container) return;
 
     addBtn.addEventListener('click', () => {
-        const firstRow = container.querySelector('.experience-row');
-        const newRow = firstRow.cloneNode(true);
+      const firstRow = container.querySelector(rowSelector);
+      if (!firstRow) return;
 
-        // Clear input values
-        newRow.querySelectorAll('input, select, textarea').forEach(field => field.value = '');
+      const newRow = firstRow.cloneNode(true);
 
-        // Add remove button only to new row
-        const removeDiv = document.createElement('div');
-        removeDiv.className = 'col-md-12 mb-3';
-        removeDiv.innerHTML = `<button type="button" class="btn btn-danger remove-row">-</button>`;
-        newRow.appendChild(removeDiv);
-
-        container.appendChild(newRow);
-    });
-
-    // Remove a row
-    container.addEventListener('click', function(e) {
-        if(e.target.classList.contains('remove-row')) {
-            e.target.closest('.experience-row').remove();
+      // Clear values for inputs/select/textarea in the cloned row
+      newRow.querySelectorAll('input, select, textarea').forEach(field => {
+        // if checkbox/radio, uncheck
+        if (field.type === 'checkbox' || field.type === 'radio') {
+          field.checked = false;
+        } else {
+          field.value = '';
         }
+
+        // If you have file inputs, reset them safely
+        if (field.type === 'file') {
+          field.value = '';
+        }
+      });
+
+      // Remove any existing remove button in the cloned row (to avoid duplicates)
+      const existingRemove = newRow.querySelector('.remove-row');
+      if (existingRemove) existingRemove.remove();
+
+      // Append a remove button to the cloned row
+      const removeDiv = document.createElement('div');
+      removeDiv.className = 'col-md-12 mb-3';
+      removeDiv.innerHTML = `<button type="button" class="btn btn-danger remove-row">-</button>`;
+      newRow.appendChild(removeDiv);
+
+      container.appendChild(newRow);
+
+      // Optionally scroll into view
+      newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
+
+    // Delegate remove clicks
+    container.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-row')) {
+        const row = e.target.closest(rowSelector);
+        if (!row) return;
+
+        // Prevent removing the last remaining row (optional)
+        const allRows = container.querySelectorAll(rowSelector);
+        if (allRows.length === 1) {
+          // If you want to allow removing all rows, comment this block out
+          // or clear the fields instead of removing.
+          row.querySelectorAll('input, select, textarea').forEach(field => {
+            if (field.type === 'checkbox' || field.type === 'radio') field.checked = false;
+            else field.value = '';
+          });
+          return;
+        }
+
+        row.remove();
+      }
+    });
+  }
+
+  // Enable for Experience (keeps backward compatibility with your existing IDs/classes)
+  enableDynamicRows('#add-experience', '#experience-container', '.experience-row');
+
+  // Enable for Education
+  enableDynamicRows('#add-education', '#educations-container', '.educations-row');
+  // Enable for Trainig
+  enableDynamicRows('#add-training', '#training-container', '.training-row')
+
 });
 </script>
-
-
-
 
 
     {% block extra_js %}{% endblock %}

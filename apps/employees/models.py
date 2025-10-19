@@ -198,8 +198,50 @@ class Employee(models.Model):
     experienced_certificate= models.ImageField(null=True)
     remarks= models.CharField(max_length=200)
 
-    # Salary policy
+    # Salary Info
+    # effective date from joining date
+    salary_policy = models.CharField(max_length=50)
+    gross_salary = models.CharField(max_length=100)
+    basic_salary = models.CharField(max_length=100)
+    house_rent = models.CharField(max_length=100)
+    transport_allowance = models.CharField(max_length=100)
+    mobile_bill = models.CharField(max_length=100)
+    food_allowance = models.CharField(max_length=100)
+    medical_allowance = models.CharField(max_length=100)
+    other_conveyence = models.CharField(max_length=100)
+    attendance_bonus = models.CharField(max_length=100)
+    tax_deduction = models.CharField(max_length=100)
+    insurance = models.CharField(max_length=100)
+    stamp = models.CharField(max_length=100)
+    salary_mode = models.CharField(max_length=100)
+    # tin number coming from above
+    pF_applicable = models.BooleanField(default=False)
+    late_deduct = models.BooleanField(default=False)
+    transport_deduct = models.BooleanField(default=False)
+    food_deduct = models.BooleanField(default=False)
+
+    # Educations
+    degree_Name =models.CharField(max_length=50)
+    institue =models.CharField(max_length=50)
+    board =models.CharField(max_length=50)
+    subject =models.CharField(max_length=50)
+    passing_year =models.CharField(max_length=50)
+    result =models.CharField(max_length=50)
+    # certificate come from below
+    certificate = models.FileField(upload_to='', null=True, blank=True)
+
+    # Leave info
+    # at present static file but late we collect from other entry from django.db import models
+
+    # Training & Certificate
+    training_name = models.CharField(max_length=100)
+    institue_name = models.CharField(max_length=100)
+    duration_Month = models.CharField(max_length=50)
+    score = models.CharField(max_length=50)
     
+
+
+
 
     # Status
     is_active = models.BooleanField(default=True)
@@ -261,7 +303,6 @@ class EducationRecord(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     grade = models.CharField(max_length=20, blank=True)
-    certificate = models.FileField(upload_to='education_certificates/', null=True, blank=True)
     
     class Meta:
         db_table = 'education_records'
