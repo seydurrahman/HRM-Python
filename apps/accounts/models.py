@@ -161,3 +161,68 @@ class Designation(models.Model):
     
     def __str__(self):
         return f"{self.title} - {self.department.name}"
+
+
+from django.db import models
+
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class CompanyUnit(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='company_units')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.group} - {self.name}"
+
+
+class Division(models.Model):
+    company_unit = models.ForeignKey(CompanyUnit, on_delete=models.CASCADE, related_name='divisions')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.company_unit} - {self.name}"
+
+
+class DepartmentDept(models.Model):
+    division = models.ForeignKey(Division, on_delete=models.CASCADE, related_name='departments_dept')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.division} - {self.name}"
+
+
+class SectiotSec(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='sections_sec')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.department} - {self.name}"
+
+
+class SubSection(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='subsections')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.section} - {self.name}"
+
+
+class Floor(models.Model):
+    subsection = models.ForeignKey(SubSection, on_delete=models.CASCADE, related_name='floors')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.subsection} - {self.name}"
+
+
+class Line(models.Model):
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name='lines')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.floor} - {self.name}"

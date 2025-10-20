@@ -14,7 +14,6 @@ class Employee(models.Model):
         ('INTERN', 'Intern'),
         ('PROBATION', 'Probation'),
         ('MTO', 'Management Trainee Officer')
-
     ]
 
     EMPLOYEE_TYPE = [
@@ -60,6 +59,16 @@ class Employee(models.Model):
         ('FEMALE', 'Female'),
         ('OTHER', 'Other'),
     ]
+    BLOOD_GROUP = (
+        ("A+", "A+"),
+        ("B+", "B+"),  # Changed from "A+" to "B+"
+        ("AB+", "AB+"),
+        ("AB-", "AB-"),
+        ("A-", "A-"),
+        ("B-", "B-"),
+        ("O+", "O+"),  # Added O+ and O- if needed
+        ("O-", "O-"),
+    )
     BANK_NAME = [
         ('DHAKA_BANK', 'Dhaka Bank'),
         ('BRAC_BANK', 'BRAC Bank'),
@@ -69,6 +78,7 @@ class Employee(models.Model):
         ('DUTCH_BANGLA', 'Dutch Bangla'),
         ('ISLAMIC_BANK', 'Islamic Bank'),
     ]
+
 
     # User relationship
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_profile')
@@ -102,9 +112,9 @@ class Employee(models.Model):
     passport_number = models.CharField(max_length=50, blank=True, null=True)
     passport_image = models.FileField(upload_to='passport_images/', null=True, blank=True)
     personal_email = models.EmailField(blank=True, null=True)
-    gender = models.CharField(max_length=10, choices=GENDER)
-    blood_group = models.CharField(max_length=5, blank=True, null=True)
-    marital_status = models.CharField(max_length=20, choices=MARITAL_STATUS, default='SINGLE')
+    gender = models.CharField(max_length=10, choices=GENDER, default="Male")
+    blood_grp = models.CharField(max_length=10, choices=BLOOD_GROUP)
+    marital_status = models.CharField(max_length=20, choices=MARITAL_STATUS)
     country = models.CharField(max_length=100, default='Bangladesh')
     division= models.CharField(max_length=100)
     district = models.CharField(max_length=100)

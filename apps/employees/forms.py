@@ -19,6 +19,7 @@ class EmployeeForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'employee_id': forms.TextInput(attrs={'class': 'form-control'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
+            'blood_grp': forms.Select(attrs={'class': 'form-control'}),
             'marital_status': forms.Select(attrs={'class': 'form-control'}),
             'department': forms.Select(attrs={'class': 'form-control'}),
             'designation': forms.Select(attrs={'class': 'form-control'}),
@@ -34,7 +35,6 @@ class EmployeeForm(forms.ModelForm):
             'floor': forms.TextInput(attrs={'class': 'form-control'}),
             'line': forms.TextInput(attrs={'class': 'form-control'}),
             'photo': forms.FileInput(attrs={'class': 'form-control'}),
-            'blood_group': forms.TextInput(attrs={'class': 'form-control'}),
             'weekend': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
     
