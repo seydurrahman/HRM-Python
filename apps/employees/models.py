@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.accounts.models import User, Department, Designation, Section
 from multiselectfield import MultiSelectField
+from django_countries.fields import CountryField
 
 class Employee(models.Model):
     """Employee Model - Main employee information"""
@@ -93,7 +94,7 @@ class Employee(models.Model):
     mother_name = models.CharField(max_length=100)
     mother_name_Bangla = models.CharField(max_length=100, blank=True, null=True)
     religion = models.CharField(max_length=50, blank=True, null=True)
-    nationality = models.CharField(max_length=50, default='Bangladeshi')
+    nationality = CountryField(default="BD")
     nid_number = models.CharField(max_length=50, unique=True)
     nid_image = models.FileField(upload_to='nid_images/', null=True, blank=True)
     birth_Reg= models.CharField(max_length=50, blank=True, null=True)

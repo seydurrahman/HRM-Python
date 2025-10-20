@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "apps.settlement.apps.SettlementConfig",
     "apps.dashboard.apps.DashboardConfig",
     "widget_tweaks",
+    'django_countries',
 ]
 
 MIDDLEWARE = [

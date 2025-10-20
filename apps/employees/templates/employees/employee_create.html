@@ -118,9 +118,9 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="status-tab"
+              id="document-tab"
               data-bs-toggle="pill"
-              data-bs-target="#status"
+              data-bs-target="#document"
               type="button"
               role="tab"
             >
@@ -888,36 +888,14 @@
               </div>
 
             </div>
+
             </div>
 
-            
-
-      
-          <!-- ========== STATUS TAB ========== -->
-          <div class="tab-pane fade" id="status" role="tabpanel">
-            <div class="section-title mb-3"><h5>Employment Status</h5></div>
-            <div class="row">
-              <div class="col-md-3 mb-3">
-                {{ form.is_active.label_tag }} {{ form.is_active }}
-              </div>
-              <div class="col-md-3 mb-3">
-                {{ form.resignation_date.label_tag }} {{ form.resignation_date}}
-              </div>
-              <div class="col-md-3 mb-3">
-                {{ form.termination_date.label_tag }} {{ form.termination_date}}
-              </div>
-              <div class="col-md-3 mb-3">
-                {{ form.exit_reason.label_tag }} {{ form.exit_reason }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ========== Trainig & certificate ======= -->
+            <!-- ========== Trainig & certificate ======= -->
           <div class="tab-pane fade" id="training" role="tabpanel">
             <div class="section-title mb-3"><h5>Training & Certificate</h5></div>
 
-            {% comment %} <div id="training-container">
+            <div id="training-container">
               <!-- first row (template row) -->
               <div class="row training-row align-items-end">
                 <div class="col-md-4 mb-3">{{ form.training_name.label_tag }} {{ form.training_name }}</div>
@@ -928,13 +906,216 @@
                 <div class="col-md-4 mb-3">{{ form.certificate.label_tag }} {{ form.certificate }}</div>
                 <!-- Note: first row should NOT include a remove button -->
               </div>
-            </div> {% endcomment %}
+            </div>
 
             <div class="mb-3">
               <!-- new add button for education -->
               <button type="button" id="add-training" class="btn btn-success">+</button>
             </div>
           </div>
+            
+
+      
+          <!-- ========== Documents TAB ========== -->
+          <div class="tab-pane fade" id="document" role="tabpanel">
+            <div class="section-title mb-3">
+              <h5>Documents</h5>
+            </div>
+              <div class="col-full mb-3">
+                <h5
+                  class="d-inline"
+                  style="
+                    background-color: #0d6efd;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                  "
+                >
+                  Personal Docs
+                </h5>
+              </div>
+              <div id="document-container">
+                <!-- first row -->
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                 <div class="col-full mb-3">
+                <h5
+                  class="d-inline"
+                  style="
+                    background-color: #0d6efd;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                  "
+                >
+                  Education Docs
+                </h5>
+              </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                 <div class="col-full mb-3">
+                <h5
+                  class="d-inline"
+                  style="
+                    background-color: #0d6efd;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                  "
+                >
+                  Experienced Docs
+                </h5>
+              </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                 <div class="col-full mb-3">
+                <h5
+                  class="d-inline"
+                  style="
+                    background-color: #0d6efd;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                  "
+                >
+                  Training Docs
+                </h5>
+              </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+                <div class="row document-row align-items-center mb-3">
+                  <!-- Label -->
+                  <div class="col-md-2">
+                    {{ form.certificate.label_tag }}
+                  </div>
+
+                  <!-- File input -->
+                  <div class="col-md-4">
+                    {{ form.certificate }}
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          
+
+        </div>
+
+        
 
 
         <!-- ========== BUTTONS ========== -->
