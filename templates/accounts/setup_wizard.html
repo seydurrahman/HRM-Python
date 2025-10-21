@@ -1,0 +1,214 @@
+{% extends 'accounts/admin_base.html' %}
+
+{% block admin_content %}
+<div class="admin-container">
+    <div class="step-indicator">
+        <div class="step active" id="step1-indicator">
+            <div class="step-number">1</div>
+            <div class="step-label">Create Group</div>
+        </div>
+        <div class="step" id="step2-indicator">
+            <div class="step-number">2</div>
+            <div class="step-label">Create Company Unit</div>
+        </div>
+        <div class="step" id="step3-indicator">
+            <div class="step-number">3</div>
+            <div class="step-label">Create Division</div>
+        </div>
+    </div>
+
+    <!-- Step 1: Create Group -->
+    <div class="step-content active" id="step1-content">
+        <h4>Step 1: Create Company Group</h4>
+        <p class="text-muted mb-4">A group represents the highest level in your organization structure.</p>
+        
+        <form method="post" id="group-form">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="1">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="group_name" class="form-label">Group Name *</label>
+                        <input type="text" class="form-control" id="group_name" name="name" 
+                               placeholder="Enter group name (e.g., Corporate Group)" required>
+                        <div class="form-text">The main organizational group for your company.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <div>
+                    <!-- No back button on first step -->
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Next: Create Company Unit <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Step 2: Create Company Unit -->
+    <div class="step-content" id="step2-content">
+        <h4>Step 2: Create Company Unit</h4>
+        <p class="text-muted mb-4">Company units are business entities within your group.</p>
+        
+        <form method="post" id="company-unit-form">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="2">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="group_select" class="form-label">Select Group *</label>
+                        <select class="form-select" id="group_select" name="group" required>
+                            <option value="">Select a group</option>
+                            <!-- Groups will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="unit_name" class="form-label">Company Unit Name *</label>
+                        <input type="text" class="form-control" id="unit_name" name="name" 
+                               placeholder="Enter company unit name" required>
+                        <div class="form-text">Business unit within the selected group.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <div>
+                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(2)">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Next: Create Division <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Step 3: Create Division -->
+    <div class="step-content" id="step3-content">
+        <h4>Step 3: Create Division</h4>
+        <p class="text-muted mb-4">Divisions represent major functional areas within company units.</p>
+        
+        <form method="post" id="division-form">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="3">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="company_unit_select" class="form-label">Select Company Unit *</label>
+                        <select class="form-select" id="company_unit_select" name="company_unit" required>
+                            <option value="">Select a company unit</option>
+                            <!-- Company units will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="division_name" class="form-label">Division Name *</label>
+                        <input type="text" class="form-control" id="division_name" name="name" 
+                               placeholder="Enter division name" required>
+                        <div class="form-text">Functional division within the company unit.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <div>
+                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(3)">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-success">Complete Setup <i class="fas fa-check ms-2"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div class="step-content" id="success-content">
+        <div class="text-center py-5">
+            <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+            <h3>Setup Complete!</h3>
+            <p class="text-muted mb-4">Your company structure has been successfully created.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Admin Dashboard
+                </a>
+                <a href="{% url 'accounts:create_department' %}" class="btn btn-success">
+                    Continue to Departments <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+
+function showStep(step) {
+    // Hide all steps
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Update indicators
+    document.querySelectorAll('.step').forEach((stepEl, index) => {
+        stepEl.classList.remove('active', 'completed');
+        if (index + 1 < step) {
+            stepEl.classList.add('completed');
+        } else if (index + 1 === step) {
+            stepEl.classList.add('active');
+        }
+    });
+    
+    // Show current step
+    document.getElementById(`step${step}-content`).classList.add('active');
+    currentStep = step;
+}
+
+function nextStep() {
+    if (currentStep < 4) {
+        showStep(currentStep + 1);
+    }
+}
+
+function previousStep(step) {
+    if (step > 1) {
+        showStep(step - 1);
+    }
+}
+
+// Form submissions
+document.getElementById('group-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Here you would typically make an AJAX call to save the group
+    // For now, we'll just proceed to next step
+    nextStep();
+});
+
+document.getElementById('company-unit-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    nextStep();
+});
+
+document.getElementById('division-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    showStep(4); // Show success message
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    showStep(1);
+});
+</script>
+{% endblock %}

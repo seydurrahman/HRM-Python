@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 
-from .models import User, Department, Designation
+from .models import User, Group,CompanyUnit,Division, Department, Section, SubSection, Floor,Line, Designation
 from .serializers import (
     UserSerializer, DepartmentSerializer,
     DesignationSerializer, LoginSerializer,
