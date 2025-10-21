@@ -225,8 +225,31 @@
                     </a>
                     <div class="collapse submenu" id="adminSubmenu">
                         <a href="/admin/">Admin Panel</a>
-                        <a href="#">Departments</a>
-                        <a href="#">Designations</a>
+                        <a href="#">Group</a>
+                        <a href="#">Unit</a>
+                        <a href="#">Division</a>
+                        <a href="#">Department</a>
+                        <a href="#">Section</a>
+                        <a href="#">Sub-Section</a>
+                        <a href="#">Floor</a>
+                        <a href="#">Line</a>
+                    </div>
+                </li>
+                {% endif %}
+                {% if user.is_hr or user.is_admin %}
+                <li>
+                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#settingsMenu" role="button" aria-expanded="false" aria-controls="adminSubmenu">
+                        <span class="nav-text"><i class="fas fa-cog"></i> Settings</span> <i class="fas fa-chevron-down float-end"></i>
+                    </a>
+                    <div class="collapse submenu" id="settingsMenu">
+                        <a href="#">Salary</a>
+                        <a href="#">Late Deduct</a>
+                        <a href="#">Leave</a>
+                        <a href="#">Grace Time</a>
+                        <a href="#">OT</a>
+                        <a href="#">Maternity</a>
+                        <a href="#">Bonus</a>
+                        <a href="#">Others</a>
                     </div>
                 </li>
                 {% endif %}
