@@ -20,7 +20,7 @@ urlpatterns = [
     path('profile/', api_profile_view, name='api-profile'),
     path('profile/update/', api_update_profile_view, name='api-profile-update'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path("", include("apps.dashboard.web_urls")),
+    path('accounts/', include('accounts.urls')),
 ]
 
 

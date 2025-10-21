@@ -1,6 +1,6 @@
 # apps/accounts/models.py
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group as AuthGroup
 from django.utils import timezone
 
 # -----------------------
@@ -81,6 +81,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 # -----------------------
 # Department hierarchy (unified)
 # -----------------------
+class CustomGroup(AuthGroup):
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'custom_group'
+    
+    def __str__(self):
+        return f"{self.name} {'(Active)' if self.is_active else '(Inactive)'}"
+    
 class Group(models.Model):
     name = models.CharField(max_length=100)
 
