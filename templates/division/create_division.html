@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h4 class="fw-semibold mb-4"><i class="fas fa-layer-group me-2 text-primary"></i>Create Division</h4>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" class="card p-3 shadow-sm">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Division Name</label>
+    <input type="text" name="name" class="form-control" placeholder="Enter Division name" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Select Group</label>
+    <select id="group_id" name="group_id" class="form-select" required>
+      <option value="">-- Select Group --</option>
+      {% for g in groups %}
+        <option value="{{ g.id }}">{{ g.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Select Unit</label>
+    <select id="unit_id" name="unit_id" class="form-select" required>
+      <option value="">-- Select Unit --</option>
+      {% for u in units %}
+        <option value="{{ u.id }}">{{ u.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Code (optional)</label>
+    <input type="text" name="code" class="form-control" placeholder="Enter code if any">
+  </div>
+
+  <div class="form-check mb-3">
+    <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
+    <label for="is_active" class="form-check-label">Active</label>
+  </div>
+
+  <button class="btn btn-primary">Create Division</button>
+</form>
+
+<div class="mt-4">
+  <a href="{% url 'accounts:division_list' %}" class="btn btn-outline-secondary">View Division List</a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const groupSelect = document.getElementById('group_id');
+  const unitSelect = document.getElementById('unit_id');
+
+  groupSelect.addEventListener('change', function() {
+    const groupId = this.value;
+    unitSelect.innerHTML = '<option value="">⏳ Loading units...</option>';
+
+    if (!groupId) {
+      unitSelect.innerHTML = '<option value="">-- Select Unit --</option>';
+      return;
+    }
+
+    fetch(`/accounts/ajax/units-by-group/?group_id=${groupId}`)
+      .then(response => response.json())
+      .then(data => {
+        unitSelect.innerHTML = '<option value="">-- Select Unit --</option>';
+        data.units.forEach(u => {
+          const option = document.createElement('option');
+          option.value = u.id;
+          option.textContent = u.name;
+          unitSelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading units:', error);
+        unitSelect.innerHTML = '<option value="">-- Error loading units --</option>';
+      });
+  });
+});
+</script>
+
+{% endblock %}

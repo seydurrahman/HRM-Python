@@ -100,16 +100,20 @@ class Group(models.Model):
 
 
 class CompanyUnit(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='company_units')
+    group = models.ForeignKey(CustomGroup, on_delete=models.CASCADE, related_name='company_units')
     name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.group} - {self.name}"
 
 
 class Division(models.Model):
-    company_unit = models.ForeignKey(CompanyUnit, on_delete=models.CASCADE, related_name='divisions')
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20, blank=True, null=True)
+    group = models.ForeignKey(CustomGroup, on_delete=models.CASCADE)
+    company_unit = models.ForeignKey(CompanyUnit, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.company_unit} - {self.name}"

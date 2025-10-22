@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Create Company / Unit{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mb-4">Create Company / Unit</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="post" class="row g-3">
+        {% csrf_token %}
+        <div class="col-md-6">
+          <label for="name" class="form-label">Unit Name</label>
+          <input id="name" name="name" class="form-control" value="{{ request.POST.name|default:'' }}" required>
+        </div>
+
+        <div class="col-md-3">
+          <label for="code" class="form-label">Code (optional)</label>
+          <input id="code" name="code" class="form-control" value="{{ request.POST.code|default:'' }}">
+        </div>
+
+        <div class="col-md-3">
+          <label for="group_id" class="form-label">Group</label>
+          <select id="group_id" name="group_id" class="form-select" required>
+            <option value="">-- Select group --</option>
+            {% for g in groups %}
+              <option value="{{ g.id }}" {% if request.POST.group_id|default:selected.group == g.id %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if request.POST.is_active or request.POST == None %}checked{% endif %}>
+            <label class="form-check-label" for="is_active">Active</label>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Create Unit</button>
+          <a class="btn btn-secondary ms-2" href="{% url 'accounts:unit_list' %}">View Units</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- quick preview of recently created / existing units -->
+  <h4>Existing Units</h4>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Code</th><th>Group</th><th>Active</th></tr>
+      </thead>
+      <tbody>
+        {% for u in units %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ u.code|default:"—" }}</td>
+            <td>{{ u.group.name }}</td>
+            <td>{% if u.is_active %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">No units yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

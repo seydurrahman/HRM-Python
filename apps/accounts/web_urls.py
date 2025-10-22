@@ -15,4 +15,10 @@ urlpatterns = [
     path('groups/', web_views.group_list, name='group_list'),
     path('groups/create/', web_views.create_group, name='create_group'),
     path('groups/<int:group_id>/toggle/', web_views.toggle_group_status, name='toggle_group_status'),
+    path('units/', web_views.unit_list, name='unit_list'),
+    path('units/create/', web_views.create_unit, name='create_unit'),
+    path('units/<int:unit_id>/toggle/', web_views.toggle_unit_status, name='toggle_unit_status'),
+    path('divisions/create/', web_views.create_division, name='create_division'),
+    path('divisions/', web_views.division_list, name='division_list'),
+    path('ajax/units-by-group/', web_views.get_units_by_group, name='get_units_by_group'),
 ]

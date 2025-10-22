@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Header and Create Button -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-semibold mb-0">
+      <i class="fas fa-list me-2 text-primary"></i>Division List
+    </h4>
+    <a href="{% url 'accounts:create_division' %}" class="btn btn-primary">
+      <i class="fas fa-plus me-1"></i> Create Division
+    </a>
+  </div>
+
+  <!-- Division Table -->
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Group</th>
+        <th>Unit</th>
+        <th>Active</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in divisions %}
+      <tr>
+        <td>{{ forloop.counter0|add:divisions.start_index }}</td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.code|default:"—" }}</td>
+        <td>{{ d.group.name }}</td>
+        <td>{{ d.company_unit.name }}</td>
+        <td>
+          {% if d.is_active %}
+            <span class="badge bg-success">Yes</span>
+          {% else %}
+            <span class="badge bg-secondary">No</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center text-muted">No divisions found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  {% if divisions.has_other_pages %}
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if divisions.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ divisions.previous_page_number }}">Previous</a></li>
+      {% endif %}
+      <li class="page-item active"><span class="page-link">{{ divisions.number }}</span></li>
+      {% if divisions.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ divisions.next_page_number }}">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}
