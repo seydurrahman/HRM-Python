@@ -155,6 +155,7 @@
                 display: none;
             }
         }
+        
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -221,14 +222,14 @@
                 {% if user.is_hr or user.is_admin %}
                 <li>
                     <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#adminSubmenu" role="button" aria-expanded="false" aria-controls="adminSubmenu">
-                        <span class="nav-text"><i class="fas fa-cog"></i> Administration</span> <i class="fas fa-chevron-down float-end"></i>
+                        <span class="nav-text"><i class="fas fa-user-cog"></i> Administration</span> <i class="fas fa-chevron-down float-end"></i>
                     </a>
                     <div class="collapse submenu" id="adminSubmenu">
                         <a href="/admin/">Admin Panel</a>
                         <a href="{% url 'accounts:group_list' %}">Group</a>
                         <a href="{% url 'accounts:unit_list' %}">Unit</a>
                         <a href="{% url 'accounts:division_list' %}">Division</a>
-                        <a href="#">Department</a>
+                        <a href="{% url 'accounts:department_list' %}">Department</a>
                         <a href="#">Section</a>
                         <a href="#">Sub-Section</a>
                         <a href="#">Floor</a>
@@ -292,9 +293,11 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        © 2025 HRM System. All rights reserved.
-    </footer>
+   <footer class="footer bg-light text-center text-muted py-3 shadow-sm">
+  <div class="container">
+    <small>© {{ now|date:"Y" }} Your Company Name — All rights reserved.</small>
+  </div>
+</footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

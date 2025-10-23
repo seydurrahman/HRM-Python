@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-semibold"><i class="fas fa-list me-2 text-primary"></i>Department List</h4>
+    <a href="{% url 'accounts:department_create' %}" class="btn btn-primary btn-sm">
+      <i class="fas fa-plus me-1"></i> Create Department
+    </a>
+  </div>
+
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Group</th>
+        <th>Unit</th>
+        <th>Division</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in departments %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.code|default:"—" }}</td>
+        <td>{{ d.group.name }}</td>
+        <td>{{ d.company_unit.name }}</td>
+        <td>{{ d.division.name }}</td>
+        <td>
+          <a href="{% url 'accounts:toggle_department_status' d.id %}" class="badge {% if d.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+            {{ d.is_active|yesno:"Yes,No" }}
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-center text-muted">No departments found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if departments.has_other_pages %}
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if departments.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ departments.previous_page_number }}">Previous</a></li>
+      {% endif %}
+      <li class="page-item active"><span class="page-link">{{ departments.number }}</span></li>
+      {% if departments.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ departments.next_page_number }}">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

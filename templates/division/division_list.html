@@ -34,9 +34,13 @@
         <td>{{ d.company_unit.name }}</td>
         <td>
           {% if d.is_active %}
-            <span class="badge bg-success">Yes</span>
+            <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-success text-decoration-none">
+              Yes
+            </a>
           {% else %}
-            <span class="badge bg-secondary">No</span>
+            <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-secondary text-decoration-none">
+              No
+            </a>
           {% endif %}
         </td>
       </tr>

@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container my-4" style="padding-bottom: 100px;">  <!-- Added bottom padding -->
+<div class="container my-5" style="padding-bottom: 100px;">
   <div class="card shadow-sm p-4">
-    <h4 class="fw-semibold mb-4">
-      <i class="fas fa-layer-group me-2 text-primary"></i>
-      Create Division
-    </h4>
+    <h4 class="fw-semibold mb-4"><i class="fas fa-sitemap me-2 text-primary"></i>Create Department</h4>
 
     {% if messages %}
       {% for message in messages %}
@@ -16,8 +13,8 @@
     <form method="POST">
       {% csrf_token %}
       <div class="mb-3">
-        <label class="form-label fw-semibold">Division Name</label>
-        <input type="text" name="name" class="form-control" placeholder="Enter Division name" required>
+        <label class="form-label fw-semibold">Department Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter department name" required>
       </div>
 
       <div class="mb-3">
@@ -41,6 +38,13 @@
       </div>
 
       <div class="mb-3">
+        <label class="form-label fw-semibold">Select Division</label>
+        <select id="division_id" name="division_id" class="form-select" required>
+          <option value="">-- Select Division --</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
         <label class="form-label fw-semibold">Code (optional)</label>
         <input type="text" name="code" class="form-control" placeholder="Enter code if any">
       </div>
@@ -51,12 +55,8 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <button class="btn btn-primary px-4">
-          <i class="fas fa-save me-1"></i> Create Division
-        </button>
-        <a href="{% url 'accounts:division_list' %}" class="btn btn-outline-secondary">
-          <i class="fas fa-list me-1"></i> View Division List
-        </a>
+        <button class="btn btn-primary px-4"><i class="fas fa-save me-1"></i> Create Department</button>
+        <a href="{% url 'accounts:department_list' %}" class="btn btn-outline-secondary"><i class="fas fa-list me-1"></i> View Department List</a>
       </div>
     </form>
   </div>
@@ -66,10 +66,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   const groupSelect = document.getElementById('group_id');
   const unitSelect = document.getElementById('unit_id');
+  const divisionSelect = document.getElementById('division_id');
 
+  // When Group changes → load Units
   groupSelect.addEventListener('change', function() {
     const groupId = this.value;
     unitSelect.innerHTML = '<option value="">⏳ Loading units...</option>';
+    divisionSelect.innerHTML = '<option value="">-- Select Division --</option>';
 
     if (!groupId) {
       unitSelect.innerHTML = '<option value="">-- Select Unit --</option>';
@@ -87,11 +90,33 @@ document.addEventListener('DOMContentLoaded', function() {
           unitSelect.appendChild(option);
         });
       })
-      .catch(error => {
-        console.error('Error loading units:', error);
-        unitSelect.innerHTML = '<option value="">-- Error loading units --</option>';
-      });
+      .catch(() => unitSelect.innerHTML = '<option value="">Error loading units</option>');
+  });
+
+  // When Unit changes → load Divisions
+  unitSelect.addEventListener('change', function() {
+    const unitId = this.value;
+    divisionSelect.innerHTML = '<option value="">⏳ Loading divisions...</option>';
+
+    if (!unitId) {
+      divisionSelect.innerHTML = '<option value="">-- Select Division --</option>';
+      return;
+    }
+
+    fetch(`/accounts/ajax/divisions-by-unit/?unit_id=${unitId}`)
+      .then(response => response.json())
+      .then(data => {
+        divisionSelect.innerHTML = '<option value="">-- Select Division --</option>';
+        data.divisions.forEach(d => {
+          const option = document.createElement('option');
+          option.value = d.id;
+          option.textContent = d.name;
+          divisionSelect.appendChild(option);
+        });
+      })
+      .catch(() => divisionSelect.innerHTML = '<option value="">Error loading divisions</option>');
   });
 });
 </script>
+
 {% endblock %}

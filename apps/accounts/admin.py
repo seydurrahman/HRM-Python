@@ -26,10 +26,9 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'code', 'head', 'budget', 'is_active', 'created_at']
-    list_filter = ['is_active', 'created_at']
-    search_fields = ['name', 'code']
-    list_editable = ['is_active']
+    list_display = ("name", "code", "group", "company_unit", "division", "is_active")
+    list_filter = ("is_active", "group", "company_unit", "division")
+    search_fields = ("name", "code")
 
 @admin.register(Designation)
 class DesignationAdmin(admin.ModelAdmin):

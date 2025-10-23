@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from apps.accounts.models import User, Department, Designation, Section
+from apps.accounts.models import User,CompanyUnit, Department, Designation, Section
 from multiselectfield import MultiSelectField
 from django_countries.fields import CountryField
 
@@ -87,7 +87,7 @@ class Employee(models.Model):
     # Name from forms: full_name_English, full_name_Bangla, email
     employee_id = models.CharField(max_length=20, unique=True)
     designation = models.ForeignKey(Designation, on_delete=models.PROTECT, related_name='employees')
-    unit = models.CharField(max_length=100, blank=True, null=True)
+    unit = models.ForeignKey(CompanyUnit, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
     division = models.CharField(max_length=100, blank=True, null=True)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='employees')
     section = models.ForeignKey(Section, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)

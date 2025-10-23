@@ -20,5 +20,11 @@ urlpatterns = [
     path('units/<int:unit_id>/toggle/', web_views.toggle_unit_status, name='toggle_unit_status'),
     path('divisions/create/', web_views.create_division, name='create_division'),
     path('divisions/', web_views.division_list, name='division_list'),
+    path('divisions/<int:division_id>/toggle/', web_views.toggle_division_status, name='toggle_division_status'),
     path('ajax/units-by-group/', web_views.get_units_by_group, name='get_units_by_group'),
+    path("departments/create/", web_views.create_department, name="department_create"),
+    path("departments/", web_views.department_list, name="department_list"),
+    path("ajax/divisions-by-unit/", web_views.get_divisions_by_unit, name="get_divisions_by_unit"),
+    path("departments/<int:department_id>/toggle/", web_views.toggle_department_status, name="toggle_department_status"),
+
 ]

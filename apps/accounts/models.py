@@ -100,12 +100,13 @@ class Group(models.Model):
 
 
 class CompanyUnit(models.Model):
-    group = models.ForeignKey(CustomGroup, on_delete=models.CASCADE, related_name='company_units')
+    group = models.ForeignKey(CustomGroup, on_delete=models.CASCADE, related_name='company_units',null=True, blank=True)  # Add this
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.group} - {self.name}"
+        group_name = self.group.name if self.group else "No Group"
+        return f"{group_name} - {self.name}"
 
 
 class Division(models.Model):
@@ -120,29 +121,12 @@ class Division(models.Model):
 
 
 class Department(models.Model):
-    division = models.ForeignKey(
-        'Division',  # lazy reference avoids direct import
-        on_delete=models.CASCADE,
-        related_name='departments'
-    )
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=50, unique=True)
-    head = models.ForeignKey(
-        'accounts.User',  # string reference avoids circular import
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='headed_departments'
-    )
-    description = models.TextField(blank=True, null=True)
-    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    code = models.CharField(max_length=20, blank=True, null=True)
+    group = models.ForeignKey(CustomGroup, on_delete=models.CASCADE)
+    company_unit = models.ForeignKey(CompanyUnit, on_delete=models.CASCADE)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'departments'
-        ordering = ['division__name', 'name']
 
     def __str__(self):
         return f"{self.division} - {self.name}"

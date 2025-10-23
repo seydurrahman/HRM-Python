@@ -5,11 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
 from django.contrib.auth.models import Group
-from .models import CustomGroup,CompanyUnit,Division,Section,SubSection,Floor,Line
+from .models import CustomGroup,CompanyUnit,Division,Department, Section,SubSection,Floor,Line
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-
 
 
 def web_login_view(request):
@@ -194,11 +193,6 @@ def toggle_unit_status(request, unit_id):
     })
 
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import CustomGroup, CompanyUnit, Division
-
 @login_required
 def create_division(request):
     groups = CustomGroup.objects.filter(is_active=True).order_by("name")
@@ -259,3 +253,93 @@ def get_units_by_group(request):
 
     units = CompanyUnit.objects.filter(group_id=group_id, is_active=True).values("id", "name")
     return JsonResponse({"units": list(units)})
+
+@login_required
+def toggle_division_status(request, division_id):
+    division = get_object_or_404(Division, id=division_id)
+    division.is_active = not division.is_active
+    division.save()
+    messages.success(
+        request,
+        f"Division '{division.name}' is now {'Active' if division.is_active else 'Inactive'}."
+    )
+    return redirect("accounts:division_list")
+
+
+@login_required
+def create_department(request):
+    groups = CustomGroup.objects.filter(is_active=True).order_by("name")
+    units = CompanyUnit.objects.filter(is_active=True).order_by("name")
+    divisions = Division.objects.filter(is_active=True).order_by("name")
+
+    if request.method == "POST":
+        name = (request.POST.get("name") or "").strip()
+        group_id = request.POST.get("group_id")
+        unit_id = request.POST.get("unit_id")
+        division_id = request.POST.get("division_id")
+        code = (request.POST.get("code") or "").strip()
+        is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
+
+        if not name:
+            messages.error(request, "Department name is required.")
+        elif not group_id or not group_id.isdigit():
+            messages.error(request, "Please select a valid group.")
+        elif not unit_id or not unit_id.isdigit():
+            messages.error(request, "Please select a valid unit.")
+        elif not division_id or not division_id.isdigit():
+            messages.error(request, "Please select a valid division.")
+        else:
+            group = get_object_or_404(CustomGroup, id=int(group_id))
+            company_unit = get_object_or_404(CompanyUnit, id=int(unit_id))
+            division = get_object_or_404(Division, id=int(division_id))
+
+            # prevent duplicate department names within same division
+            if Department.objects.filter(name__iexact=name, division=division).exists():
+                messages.error(request, "A department with this name already exists in the selected division.")
+            else:
+                dept_kwargs = {
+                    "name": name,
+                    "group": group,
+                    "company_unit": company_unit,
+                    "division": division,
+                    "is_active": is_active,
+                }
+                if code:
+                    dept_kwargs["code"] = code
+                Department.objects.create(**dept_kwargs)
+                messages.success(request, "Department created successfully!")
+                return redirect("accounts:department_list")
+
+    context = {"groups": groups, "units": units, "divisions": divisions}
+    return render(request, "department/create_department.html", context)
+
+
+@login_required
+def department_list(request):
+    departments = Department.objects.select_related("group", "company_unit", "division").order_by("id")
+    paginator = Paginator(departments, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    context = {"departments": page_obj}
+    return render(request, "department/department_list.html", context)
+
+
+@login_required
+def get_divisions_by_unit(request):
+    unit_id = request.GET.get("unit_id")
+    if not unit_id:
+        return JsonResponse({"divisions": []})
+    divisions = Division.objects.filter(company_unit_id=unit_id, is_active=True).values("id", "name")
+    return JsonResponse({"divisions": list(divisions)})
+
+
+@login_required
+def toggle_department_status(request, department_id):
+    department = get_object_or_404(Department, id=department_id)
+    department.is_active = not department.is_active
+    department.save()
+    messages.success(
+        request,
+        f"Department '{department.name}' is now {'Active' if department.is_active else 'Inactive'}."
+    )
+    return redirect("accounts:department_list")
