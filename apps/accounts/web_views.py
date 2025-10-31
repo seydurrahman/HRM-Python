@@ -192,47 +192,47 @@ def toggle_unit_status(request, unit_id):
         "new_status": unit.is_active
     })
 
-
+# Create Division
 @login_required
 def create_division(request):
-    groups = CustomGroup.objects.filter(is_active=True).order_by("name")
-    units = CompanyUnit.objects.filter(is_active=True).order_by("name")
-    divisions = Division.objects.select_related("company_unit", "group").all().order_by("id")
-
+    groups = CustomGroup.objects.filter(is_active=True).order_by('name')
+    
     if request.method == "POST":
-        name = (request.POST.get("name") or "").strip()
+        name = request.POST.get("name")
+        code = request.POST.get("code")
         group_id = request.POST.get("group_id")
         unit_id = request.POST.get("unit_id")
-        code = (request.POST.get("code") or "").strip()
         is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
-
-        if not name:
-            messages.error(request, "Division name is required.")
-        elif not group_id or not group_id.isdigit():
-            messages.error(request, "Please select a valid group.")
-        elif not unit_id or not unit_id.isdigit():
-            messages.error(request, "Please select a valid unit.")
-        else:
-            group = get_object_or_404(CustomGroup, id=int(group_id))
-            company_unit = get_object_or_404(CompanyUnit, id=int(unit_id))
-
-            # prevent duplicate division names within same group & unit
-            if Division.objects.filter(name__iexact=name, group=group, company_unit=company_unit).exists():
-                messages.error(request, "A division with this name already exists in the selected group and unit.")
-            else:
-                division_kwargs = {"name": name, "group": group, "company_unit": company_unit}
-                if code:
-                    division_kwargs["code"] = code
-                try:
-                    Division.objects.create(**division_kwargs, is_active=is_active)
-                except TypeError:
-                    Division.objects.create(**division_kwargs)
-
-                messages.success(request, "Division created successfully!")
-                return redirect("accounts:division_list")
-
-    context = {"units": units, "groups": groups, "divisions": divisions}
-    return render(request, "division/create_division.html", context)
+        
+        if not all([name, group_id, unit_id]):
+            messages.error(request, "Please fill all required fields.")
+            return redirect("accounts:create_division")
+            
+        try:
+            unit = CompanyUnit.objects.get(id=unit_id, group_id=group_id)
+            
+            # Check if division with same name exists in this unit
+            if Division.objects.filter(name__iexact=name, unit=unit).exists():
+                messages.error(request, "A division with this name already exists in the selected unit.")
+                return redirect("accounts:create_division")
+                
+            division = Division.objects.create(
+                name=name,
+                code=code,
+                unit=unit,
+                is_active=is_active
+            )
+            messages.success(request, "Division created successfully!")
+            return redirect("accounts:division_list")
+            
+        except CompanyUnit.DoesNotExist:
+            messages.error(request, "Invalid unit selected.")
+        except Exception as e:
+            messages.error(request, f"Error creating division: {str(e)}")
+    
+    return render(request, "division/create_division.html", {
+        "groups": groups
+    })
 
 @login_required
 def division_list(request):
@@ -265,7 +265,7 @@ def toggle_division_status(request, division_id):
     )
     return redirect("accounts:division_list")
 
-
+# Create Department
 @login_required
 def create_department(request):
     groups = CustomGroup.objects.filter(is_active=True).order_by("name")
@@ -343,3 +343,118 @@ def toggle_department_status(request, department_id):
         f"Department '{department.name}' is now {'Active' if department.is_active else 'Inactive'}."
     )
     return redirect("accounts:department_list")
+
+
+@login_required
+def create_section(request):
+    groups = CustomGroup.objects.filter(is_active=True).order_by("name")
+    units = CompanyUnit.objects.filter(is_active=True).order_by("name")
+    divisions = Division.objects.filter(is_active=True).order_by("name")
+    departments = Department.objects.filter(is_active=True).order_by("name")
+
+    if request.method == "POST":
+        name = (request.POST.get("name") or "").strip()
+        code = (request.POST.get("code") or "").strip()
+        department_id = request.POST.get("department_id")
+        is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
+
+        errors = []
+        if not name:
+            errors.append("Section name is required.")
+        if not department_id or not department_id.isdigit():
+            errors.append("Please select a valid department.")
+
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+        else:
+            department = get_object_or_404(Department, id=int(department_id))
+
+            # Prevent duplicate section names in the same department
+            if Section.objects.filter(name__iexact=name, department=department).exists():
+                messages.error(request, "A section with this name already exists in the selected department.")
+            else:
+                section = Section.objects.create(
+                    name=name,
+                    code=code,
+                    department=department,
+                    is_active=is_active,
+                )
+                messages.success(request, f"Section '{section.name}' created successfully!")
+                return redirect("accounts:section_list")
+
+    context = {
+        "groups": groups,
+        "units": units,
+        "divisions": divisions,
+        "departments": departments,
+    }
+    return render(request, "section/create_section.html", context)
+
+
+# -----------------------------
+# ✅ List Sections
+# -----------------------------
+@login_required
+def section_list(request):
+    sections = Section.objects.select_related(
+        "department",
+        "department__division",
+        "department__division__company_unit",
+        "department__division__company_unit__group"
+    ).order_by("id")
+
+    paginator = Paginator(sections, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {"sections": page_obj}
+    return render(request, "section/section_list.html", context)
+
+
+# -----------------------------
+# ✅ AJAX: Get divisions & departments by unit
+# -----------------------------
+@login_required
+def get_divisions_and_departments_by_unit(request):
+    unit_id = request.GET.get("unit_id")
+
+    if not unit_id:
+        return JsonResponse({"divisions": [], "departments": []})
+
+    divisions = Division.objects.filter(company_unit_id=unit_id, is_active=True).values("id", "name")
+    departments = Department.objects.filter(division__in=divisions, is_active=True).values("id", "name")
+
+    return JsonResponse({
+        "divisions": list(divisions),
+        "departments": list(departments)
+    })
+
+
+# -----------------------------
+# ✅ AJAX: Get departments by division
+# -----------------------------
+@login_required
+def get_departments_by_division(request):
+    division_id = request.GET.get("division_id")
+
+    if not division_id:
+        return JsonResponse({"departments": []})
+
+    departments = Department.objects.filter(division_id=division_id, is_active=True).values("id", "name")
+    return JsonResponse({"departments": list(departments)})
+
+
+# -----------------------------
+# ✅ Toggle Section Active/Inactive
+# -----------------------------
+@login_required
+@require_POST
+def toggle_section_status(request, section_id):
+    section = get_object_or_404(Section, id=section_id)
+    section.is_active = not section.is_active
+    section.save(update_fields=["is_active"])
+
+    status_text = "activated" if section.is_active else "deactivated"
+    messages.success(request, f"Section '{section.name}' has been {status_text} successfully.")
+    return redirect("accounts:section_list")

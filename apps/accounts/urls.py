@@ -2,9 +2,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
+from .import views
 from .views import (
-    UserViewSet, DepartmentViewSet, DesignationViewSet,
-    api_register_view, api_login_view, api_logout_view, api_profile_view, api_update_profile_view
+    UserViewSet, DepartmentViewSet, DesignationViewSet,units_by_group,
+    api_register_view, api_login_view, api_logout_view, api_profile_view, api_update_profile_view,
 )
 
 router = DefaultRouter()
@@ -21,6 +22,7 @@ urlpatterns = [
     path('profile/update/', api_update_profile_view, name='api-profile-update'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/', include('accounts.urls')),
+    path('api/ajax/units-by-group/<int:group_id>/', views.units_by_group, name='ajax-units-by-group'),
 ]
 
 

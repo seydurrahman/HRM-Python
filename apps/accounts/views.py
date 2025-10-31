@@ -133,3 +133,38 @@ def api_update_profile_view(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import CompanyUnit, CustomGroup
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_units_by_group(request):
+    """Return all active units for a specific group"""
+    try:
+        group_id = request.GET.get('group_id')
+        if not group_id:
+            return Response({
+                'status': 'error',
+                'message': 'group_id is required'
+            }, status=400)
+
+        units = CompanyUnit.objects.filter(
+            group_id=group_id,
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        
+        return Response({
+            'status': 'success',
+            'units': list(units)
+        })
+        
+    except Exception as e:
+        return Response({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)

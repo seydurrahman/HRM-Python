@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5" style="padding-bottom: 100px;">
+  <div class="card shadow-sm p-4">
+    <h4 class="fw-semibold mb-4"><i class="fas fa-network-wired me-2 text-primary"></i>Create Section</h4>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Section Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter section name" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Group</label>
+        <select id="group_id" name="group_id" class="form-select" required>
+          <option value="">-- Select Group --</option>
+          {% for g in groups %}
+            <option value="{{ g.id }}">{{ g.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Unit</label>
+        <select id="unit_id" name="unit_id" class="form-select" required>
+          <option value="">-- Select Unit --</option>
+          {% for u in units %}
+            <option value="{{ u.id }}">{{ u.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Division</label>
+        <select id="division_id" name="division_id" class="form-select" required>
+          <option value="">-- Select Division --</option>
+          {% for d in divisions %}
+            <option value="{{ d.id }}">{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Department</label>
+        <select id="department_id" name="department_id" class="form-select" required>
+          <option value="">-- Select Department --</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Code (optional)</label>
+        <input type="text" name="code" class="form-control" placeholder="Enter section code if any">
+      </div>
+
+      <div class="form-check mb-4">
+        <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
+        <label for="is_active" class="form-check-label">Active</label>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary px-4"><i class="fas fa-save me-1"></i> Create Section</button>
+        <a href="{% url 'accounts:section_list' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-list me-1"></i> View Section List
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const unitSelect = document.getElementById('unit_id');
+  const divisionSelect = document.getElementById('division_id');
+  const departmentSelect = document.getElementById('department_id');
+
+  // When Division changes → Load Departments
+  divisionSelect.addEventListener('change', function() {
+    const divisionId = this.value;
+    departmentSelect.innerHTML = '<option value="">⏳ Loading departments...</option>';
+
+    if (!divisionId) {
+      departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
+      return;
+    }
+
+    fetch(`/accounts/ajax/departments-by-division/?division_id=${divisionId}`)
+      .then(response => response.json())
+      .then(data => {
+        departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
+        data.departments.forEach(dep => {
+          const option = document.createElement('option');
+          option.value = dep.id;
+          option.textContent = dep.name;
+          departmentSelect.appendChild(option);
+        });
+      })
+      .catch(() => departmentSelect.innerHTML = '<option value="">Error loading departments</option>');
+  });
+});
+</script>
+{% endblock %}
