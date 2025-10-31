@@ -209,24 +209,26 @@ def create_division(request):
             return redirect("accounts:create_division")
             
         try:
-            unit = CompanyUnit.objects.get(id=unit_id, group_id=group_id)
+            company_unit = CompanyUnit.objects.get(id=unit_id, group_id=group_id)
             
-            # Check if division with same name exists in this unit
-            if Division.objects.filter(name__iexact=name, unit=unit).exists():
+            # ✅ use correct field name: company_unit
+            if Division.objects.filter(name__iexact=name, company_unit=company_unit).exists():
                 messages.error(request, "A division with this name already exists in the selected unit.")
                 return redirect("accounts:create_division")
                 
+            # ✅ also assign company_unit instead of unit
             division = Division.objects.create(
                 name=name,
                 code=code,
-                unit=unit,
+                group_id=group_id,
+                company_unit=company_unit,
                 is_active=is_active
             )
             messages.success(request, "Division created successfully!")
             return redirect("accounts:division_list")
             
         except CompanyUnit.DoesNotExist:
-            messages.error(request, "Invalid unit selected.")
+            messages.error(request, "Invalid company unit selected.")
         except Exception as e:
             messages.error(request, f"Error creating division: {str(e)}")
     

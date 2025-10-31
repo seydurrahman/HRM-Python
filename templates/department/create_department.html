@@ -28,21 +28,19 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label fw-semibold">Select Unit</label>
-        <select id="unit_id" name="unit_id" class="form-select" required>
-          <option value="">-- Select Unit --</option>
-          {% for u in units %}
-            <option value="{{ u.id }}">{{ u.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
+  <label class="form-label fw-semibold">Select Unit</label>
+  <select id="unit_id" name="unit_id" class="form-select" required>
+    <option value="">-- Select Unit --</option>
+    {# DO NOT loop over units here so it's empty until a group is selected #}
+  </select>
+</div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Select Division</label>
-        <select id="division_id" name="division_id" class="form-select" required>
-          <option value="">-- Select Division --</option>
-        </select>
-      </div>
+<div class="mb-3">
+  <label class="form-label fw-semibold">Select Division</label>
+  <select id="division_id" name="division_id" class="form-select" required>
+    <option value="">-- Select Division --</option>
+  </select>
+</div>
 
       <div class="mb-3">
         <label class="form-label fw-semibold">Code (optional)</label>
