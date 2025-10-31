@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Create Sub-Section{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="card shadow-sm p-4">
+    <h4 class="fw-semibold mb-4">
+      <i class="fas fa-layer-group me-2 text-primary"></i>
+      Create Sub-Section
+    </h4>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" id="subsectionForm">
+      {% csrf_token %}
+      
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Sub-Section Name <span class="text-danger">*</span></label>
+        <input type="text" name="name" class="form-control" placeholder="Enter sub-section name" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Group <span class="text-danger">*</span></label>
+        <select id="group_id" name="group_id" class="form-select" required>
+  <option value="">-- Select Group --</option>
+  {% for g in groups %}<option value="{{ g.id }}">{{ g.name }}</option>{% endfor %}
+</select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Unit <span class="text-danger">*</span></label>
+        <select id="unit_id" name="unit_id" class="form-select" required disabled>
+  <option value="">-- First Select Group --</option>
+</select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Division <span class="text-danger">*</span></label>
+        <select id="division_id" name="division_id" class="form-select" required disabled>
+          <option value="">-- First Select Unit --</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Department <span class="text-danger">*</span></label>
+        <select id="department_id" name="department_id" class="form-select" required disabled>
+          <option value="">-- First Select Division --</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Section <span class="text-danger">*</span></label>
+        <select id="section_id" name="section_id" class="form-select" required disabled>
+          <option value="">-- First Select Department --</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Code</label>
+        <input type="text" name="code" class="form-control" placeholder="Enter sub-section code (optional)">
+      </div>
+
+      <div class="form-check mb-4">
+        <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
+        <label class="form-check-label" for="is_active">Active</label>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="fas fa-save me-1"></i> Create Sub-Section
+        </button>
+        <a href="{% url 'accounts:subsection_list' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-list me-1"></i> View Sub-Section List
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const groupSelect = document.getElementById('group_id');
+    const unitSelect = document.getElementById('unit_id');
+    const divisionSelect = document.getElementById('division_id');
+    const departmentSelect = document.getElementById('department_id');
+    const sectionSelect = document.getElementById('section_id');
+
+    const endpoints = {
+        units: '/accounts/ajax/units-by-group/?group_id=',
+        divisions: '/accounts/ajax/divisions-by-unit/?unit_id=',
+        departments: '/accounts/ajax/departments-by-division/?division_id=',
+        sections: '/accounts/ajax/sections-by-department/?department_id='
+    };
+
+    function reset(select, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        select.disabled = true;
+    }
+
+    function populate(select, items, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        items.forEach(i => select.add(new Option(i.name, i.id)));
+        select.disabled = false;
+    }
+
+    async function fetchAndPopulate(url, select, key, placeholder) {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data.status === 'success') populate(select, data[key], placeholder);
+            else reset(select, '-- Error Loading Data --');
+        } catch {
+            reset(select, '-- Error Loading Data --');
+        }
+    }
+
+    groupSelect.addEventListener('change', function() {
+        reset(unitSelect, '-- Select Unit --');
+        reset(divisionSelect, '-- First Select Unit --');
+        reset(departmentSelect, '-- First Select Division --');
+        reset(sectionSelect, '-- First Select Department --');
+        const groupId = this.value;
+        if (groupId) fetchAndPopulate(endpoints.units + groupId, unitSelect, 'units', '-- Select Unit --');
+    });
+
+    unitSelect.addEventListener('change', function() {
+        reset(divisionSelect, '-- Select Division --');
+        reset(departmentSelect, '-- First Select Division --');
+        reset(sectionSelect, '-- First Select Department --');
+        const unitId = this.value;
+        if (unitId) fetchAndPopulate(endpoints.divisions + unitId, divisionSelect, 'divisions', '-- Select Division --');
+    });
+
+    divisionSelect.addEventListener('change', function() {
+        reset(departmentSelect, '-- Select Department --');
+        reset(sectionSelect, '-- First Select Department --');
+        const divisionId = this.value;
+        if (divisionId) fetchAndPopulate(endpoints.departments + divisionId, departmentSelect, 'departments', '-- Select Department --');
+    });
+
+    departmentSelect.addEventListener('change', function() {
+        reset(sectionSelect, '-- Select Section --');
+        const departmentId = this.value;
+        if (departmentId) fetchAndPopulate(endpoints.sections + departmentId, sectionSelect, 'sections', '-- Select Section --');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

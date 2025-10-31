@@ -460,3 +460,121 @@ def toggle_section_status(request, section_id):
     status_text = "activated" if section.is_active else "deactivated"
     messages.success(request, f"Section '{section.name}' has been {status_text} successfully.")
     return redirect("accounts:section_list")
+
+@login_required
+def create_subsection(request):
+    groups = CustomGroup.objects.filter(is_active=True).order_by('name')
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        section_id = request.POST.get("section_id")
+        code = request.POST.get("code")
+        is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
+
+        if not all([name, section_id]):
+            messages.error(request, "Please fill all required fields.")
+            return render(request, "sub_section/create_subsection.html", {"groups": groups})
+
+        try:
+            section = Section.objects.get(id=section_id)
+            if SubSection.objects.filter(name__iexact=name, section=section).exists():
+                messages.error(request, "A sub-section with this name already exists in the selected section.")
+                return render(request, "sub_section/create_subsection.html", {"groups": groups})
+            SubSection.objects.create(
+                name=name,
+                section=section,
+                code=code,
+                is_active=is_active
+            )
+            messages.success(request, "Sub-section created successfully!")
+            return redirect("accounts:subsection_list")
+
+        except Section.DoesNotExist:
+            messages.error(request, "Selected section does not exist.")
+        except Exception as e:
+            messages.error(request, f"Error creating sub-section: {str(e)}")
+
+    return render(request, "sub_section/create_subsection.html", {"groups": groups})
+
+@login_required
+def subsection_list(request):
+    subsections = SubSection.objects.select_related(
+        'section__department__division__company_unit__group'
+    ).all().order_by('name')
+    return render(request, "sub_section/subsection_list.html", {"subsections": subsections})
+
+@login_required
+def toggle_subsection_status(request, subsection_id):
+    try:
+        subsection = get_object_or_404(SubSection, id=subsection_id)
+        subsection.is_active = not subsection.is_active
+        subsection.save()
+        
+        status = "activated" if subsection.is_active else "deactivated"
+        messages.success(request, f"Sub-section {status} successfully!")
+        
+    except Exception as e:
+        messages.error(request, f"Error toggling sub-section status: {str(e)}")
+        
+    return redirect("accounts:subsection_list")
+
+@login_required
+def get_sections_by_department(request):
+    try:
+        department_id = request.GET.get('department_id')
+        if not department_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Department ID is required'
+            }, status=400)
+
+        sections = Section.objects.filter(
+            department_id=department_id,
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        
+        return JsonResponse({
+            'status': 'success',
+            'sections': list(sections)
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
+
+@login_required
+def get_units_by_group(request):
+    group_id = request.GET.get('group_id')
+    if not group_id:
+        return JsonResponse({'status':'error','message':'Group ID required'}, status=400)
+    units = CompanyUnit.objects.filter(group_id=group_id, is_active=True).values('id','name').order_by('name')
+    return JsonResponse({'status':'success','units': list(units)})
+
+
+@login_required
+def get_divisions_by_unit(request):
+    unit_id = request.GET.get('unit_id')
+    if not unit_id:
+        return JsonResponse({'status':'error','message':'Unit ID required'}, status=400)
+    
+    try:
+        divisions = Division.objects.filter(
+            company_unit_id=unit_id,  # must match model field
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        
+        return JsonResponse({'status':'success','divisions': list(divisions)})
+    
+    except Exception as e:
+        return JsonResponse({'status':'error','message': str(e)}, status=400)
+
+
+@login_required
+def get_departments_by_division(request):
+    division_id = request.GET.get('division_id')
+    if not division_id:
+        return JsonResponse({'status':'error','message':'Division ID required'}, status=400)
+    departments = Department.objects.filter(division_id=division_id, is_active=True).values('id','name').order_by('name')
+    return JsonResponse({'status':'success','departments': list(departments)})

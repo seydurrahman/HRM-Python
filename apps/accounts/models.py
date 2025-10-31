@@ -162,11 +162,17 @@ class Section(models.Model):
 
 
 class SubSection(models.Model):
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='subsections')
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20, blank=True, null=True)  # <- important
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['name']
+        unique_together = ['name', 'section']
 
     def __str__(self):
-        return f"{self.section} - {self.name}"
+        return f"{self.name} ({self.section.name})"
 
 
 class Floor(models.Model):
