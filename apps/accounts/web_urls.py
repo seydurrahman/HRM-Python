@@ -39,4 +39,9 @@ urlpatterns = [
     path('ajax/divisions-by-unit/', web_views.get_divisions_by_unit, name='get_divisions_by_unit'),
     path('ajax/departments-by-division/', web_views.get_departments_by_division, name='get_departments_by_division'),
     path('ajax/sections-by-department/', web_views.get_sections_by_department, name='get_sections_by_department'),
+
+    path('floor/create/', web_views.create_floor, name='create_floor'),
+    path('floor/', web_views.floor_list, name='floor_list'),
+    path('floor/<int:floor_id>/toggle/', web_views.toggle_floor_status, name='toggle_floor_status'),
+    path('ajax/subsections-by-section/', web_views.get_subsections_by_section, name='get_subsections_by_section'),
 ]

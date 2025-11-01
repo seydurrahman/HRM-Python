@@ -1,303 +1,357 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}HRM System{% endblock %}</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
 
     <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+      }
 
-        .main-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-        }
+      .main-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+      }
 
-        /* Sidebar Styling */
+      /* Sidebar Styling */
+      .sidebar {
+        width: 250px;
+        background-color: #0d6efd;
+        color: #fff;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .sidebar .nav-link {
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 15px;
+        border-radius: 0;
+      }
+
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .sidebar .nav-link i {
+        margin-right: 4px;
+        vertical-align: middle;
+      }
+
+      .sidebar hr {
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .dropicon-link {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        color: #fff !important;
+        padding: 10px 20px !important;
+        font-size: 15px !important;
+        text-decoration: none;
+        width: 100%;
+      }
+
+      .dropicon-link .nav-text {
+        display: flex;
+        align-items: center;
+      }
+
+      .reports-link i {
+        vertical-align: middle;
+      }
+
+      /* Submenu styling (Administration section) */
+      .submenu {
+        background-color: rgba(255, 255, 255, 0.08);
+        margin-left: 15px;
+        border-left: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .submenu a {
+        display: block;
+        padding: 8px 30px;
+        font-size: 14px;
+        color: #f8f9fa;
+        text-decoration: none;
+        position: relative;
+      }
+
+      .submenu a::before {
+        content: "-";
+        position: absolute;
+        left: 15px;
+        color: #ffffffb3;
+      }
+
+      .submenu a:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: #fff;
+      }
+
+      /* Main content */
+      .content {
+        flex-grow: 1;
+        padding: 20px;
+      }
+
+      /* Footer */
+      footer {
+        background-color: #f1f1f1;
+        text-align: center;
+        padding: 15px;
+        border-top: 1px solid #dee2e6;
+        margin-top: auto;
+      }
+
+      /* Mobile responsive sidebar */
+      @media (max-width: 992px) {
         .sidebar {
-            width: 250px;
-            background-color: #0d6efd;
-            color: #fff;
-            transition: transform 0.3s ease-in-out;
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100%;
+          z-index: 1050;
+          transform: translateX(-100%);
         }
 
-        .sidebar .nav-link {
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 15px;
-            border-radius: 0;
+        .sidebar.show {
+          transform: translateX(0);
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.2);
+        .sidebar-toggle {
+          display: inline-block;
+          position: fixed;
+          top: 15px;
+          left: 15px;
+          background-color: #0d6efd;
+          border: none;
+          color: #fff;
+          font-size: 20px;
+          border-radius: 4px;
+          padding: 8px 10px;
+          z-index: 1100;
         }
+      }
 
-        .sidebar .nav-link i {
-            margin-right: 4px;
-            vertical-align: middle;
+      @media (min-width: 993px) {
+        .sidebar-toggle {
+          display: none;
         }
-
-        .sidebar hr {
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .dropicon-link {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    color: #fff !important;
-    padding: 10px 20px !important;
-    font-size: 15px !important;
-    text-decoration: none;
-    width: 100%;
-}
-
-.dropicon-link .nav-text {
-    display: flex;
-    align-items: center;
-}
-
-.reports-link i {
-    vertical-align: middle;
-}
-
-
-        /* Submenu styling (Administration section) */
-        .submenu {
-            background-color: rgba(255, 255, 255, 0.08);
-            margin-left: 15px;
-            border-left: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .submenu a {
-            display: block;
-            padding: 8px 30px;
-            font-size: 14px;
-            color: #f8f9fa;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .submenu a::before {
-            content: "-";
-            position: absolute;
-            left: 15px;
-            color: #ffffffb3;
-        }
-
-        .submenu a:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-        }
-
-        /* Main content */
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #f1f1f1;
-            text-align: center;
-            padding: 15px;
-            border-top: 1px solid #dee2e6;
-            margin-top: auto;
-        }
-
-        /* Mobile responsive sidebar */
-        @media (max-width: 992px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                z-index: 1050;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .sidebar-toggle {
-                display: inline-block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                background-color: #0d6efd;
-                border: none;
-                color: #fff;
-                font-size: 20px;
-                border-radius: 4px;
-                padding: 8px 10px;
-                z-index: 1100;
-            }
-        }
-
-        @media (min-width: 993px) {
-            .sidebar-toggle {
-                display: none;
-            }
-        }
-        
+      }
     </style>
 
     {% block extra_css %}{% endblock %}
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Sidebar Toggle Button (Mobile) -->
     <button class="sidebar-toggle" id="sidebarToggle">
-        <i class="fas fa-bars"></i>
+      <i class="fas fa-bars"></i>
     </button>
 
     <div class="main-wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar d-flex flex-column p-3" id="sidebar">
+        <a
+          href="{% url 'dashboard:dashboard' %}"
+          class="d-flex align-items-center mb-3 text-white text-decoration-none"
+        >
+          <i class="fas fa-building fa-lg me-2"></i>
+          <span class="fs-4">HRM System</span>
+        </a>
+        <hr />
 
-        <!-- Sidebar -->
-        <div class="sidebar d-flex flex-column p-3" id="sidebar">
-            <a href="{% url 'dashboard:dashboard' %}" class="d-flex align-items-center mb-3 text-white text-decoration-none">
-                <i class="fas fa-building fa-lg me-2"></i>
-                <span class="fs-4">HRM System</span>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a
+              href="{% url 'dashboard:dashboard' %}"
+              class="nav-link text-white"
+            >
+              <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
-            <hr>
+          </li>
 
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="{% url 'dashboard:dashboard' %}" class="nav-link text-white">
-                        <i class="fas fa-tachometer-alt "></i> Dashboard
-                    </a>
-                </li>
-
-                
-
-                <li>
-                    <a href="{% url 'employees:list' %}" class="nav-link text-white">
-                        <i class="fas fa-users"></i> Employees
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'attendance:list' %}" class="nav-link text-white">
-                        <i class="fas fa-clock"></i> Attendance
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'leave_management:list' %}" class="nav-link text-white">
-                        <i class="fas fa-calendar-days"></i> Leave
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'payroll:list' %}" class="nav-link text-white">
-                        <i class="fas fa-money-bill"></i> Payroll
-                    </a>
-                </li>
-                {% if user.is_hr or user.is_admin %}
-                <li>
-                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" aria-expanded="false" aria-controls="reportsSubmenu">
-                        <span class="nav-text"><i class="fas fa-file-alt"></i> Reports</span> <i class="fas fa-chevron-down float-end"></i>
-                    </a>
-                    <div class="collapse submenu" id="reportsSubmenu">
-                        <a href="#">Daily Attendance</a>
-                        <a href="#">Department wise Attendance</a>
-                        <a href="#">OT Budgets</a>
-                        <a href="#">Overall Status</a>
-                    </div>
-                </li>
-                {% endif %}
-                {% if user.is_hr or user.is_admin %}
-                <li>
-                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#adminSubmenu" role="button" aria-expanded="false" aria-controls="adminSubmenu">
-                        <span class="nav-text"><i class="fas fa-user-cog"></i> Administration</span> <i class="fas fa-chevron-down float-end"></i>
-                    </a>
-                    <div class="collapse submenu" id="adminSubmenu">
-                        <a href="/admin/">Admin Panel</a>
-                        <a href="{% url 'accounts:group_list' %}">Group</a>
-                        <a href="{% url 'accounts:unit_list' %}">Unit</a>
-                        <a href="{% url 'accounts:division_list' %}">Division</a>
-                        <a href="{% url 'accounts:department_list' %}">Department</a>
-                        <a href="{% url 'accounts:section_list' %}">Section</a>
-                        <a href="{% url 'accounts:subsection_list' %}">Sub-Section</a>
-                        <a href="#">Floor</a>
-                        <a href="#">Line</a>
-                    </div>
-                </li>
-                {% endif %}
-                {% if user.is_hr or user.is_admin %}
-                <li>
-                    <a class="nav-link text-white dropicon-link" data-bs-toggle="collapse" href="#settingsMenu" role="button" aria-expanded="false" aria-controls="adminSubmenu">
-                        <span class="nav-text"><i class="fas fa-cog"></i> Settings</span> <i class="fas fa-chevron-down float-end"></i>
-                    </a>
-                    <div class="collapse submenu" id="settingsMenu">
-                        <a href="#">Salary</a>
-                        <a href="#">Late Deduct</a>
-                        <a href="#">Leave</a>
-                        <a href="#">Grace Time</a>
-                        <a href="#">OT</a>
-                        <a href="#">Maternity</a>
-                        <a href="#">Bonus</a>
-                        <a href="#">Others</a>
-                    </div>
-                </li>
-                {% endif %}
-            </ul>
-
-            <hr>
-
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fas fa-user-circle fa-lg me-2"></i>
-                    <strong>{{ user.get_full_name }}</strong>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-key"></i> Change Password</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form method="post" action="{% url 'accounts:logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                        </form>
-                    </li>
-                </ul>
+          <li>
+            <a href="{% url 'employees:list' %}" class="nav-link text-white">
+              <i class="fas fa-users"></i> Employees
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'attendance:list' %}" class="nav-link text-white">
+              <i class="fas fa-clock"></i> Attendance
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'leave_management:list' %}"
+              class="nav-link text-white"
+            >
+              <i class="fas fa-calendar-days"></i> Leave
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'payroll:list' %}" class="nav-link text-white">
+              <i class="fas fa-money-bill"></i> Payroll
+            </a>
+          </li>
+          {% if user.is_hr or user.is_admin %}
+          <li>
+            <a
+              class="nav-link text-white dropicon-link"
+              data-bs-toggle="collapse"
+              href="#reportsSubmenu"
+              role="button"
+              aria-expanded="false"
+              aria-controls="reportsSubmenu"
+            >
+              <span class="nav-text"
+                ><i class="fas fa-file-alt"></i> Reports</span
+              >
+              <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <div class="collapse submenu" id="reportsSubmenu">
+              <a href="#">Daily Attendance</a>
+              <a href="#">Department wise Attendance</a>
+              <a href="#">OT Budgets</a>
+              <a href="#">Overall Status</a>
             </div>
-        </div>
+          </li>
+          {% endif %} {% if user.is_hr or user.is_admin %}
+          <li>
+            <a
+              class="nav-link text-white dropicon-link"
+              data-bs-toggle="collapse"
+              href="#adminSubmenu"
+              role="button"
+              aria-expanded="false"
+              aria-controls="adminSubmenu"
+            >
+              <span class="nav-text"
+                ><i class="fas fa-user-cog"></i> Administration</span
+              >
+              <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <div class="collapse submenu" id="adminSubmenu">
+              <a href="/admin/">Admin Panel</a>
+              <a href="{% url 'accounts:group_list' %}">Group</a>
+              <a href="{% url 'accounts:unit_list' %}">Unit</a>
+              <a href="{% url 'accounts:division_list' %}">Division</a>
+              <a href="{% url 'accounts:department_list' %}">Department</a>
+              <a href="{% url 'accounts:section_list' %}">Section</a>
+              <a href="{% url 'accounts:subsection_list' %}">Sub-Section</a>
+              <a href="{% url 'accounts:floor_list' %}">Floor</a>
+              <a href="#">Line</a>
+            </div>
+          </li>
+          {% endif %} {% if user.is_hr or user.is_admin %}
+          <li>
+            <a
+              class="nav-link text-white dropicon-link"
+              data-bs-toggle="collapse"
+              href="#settingsMenu"
+              role="button"
+              aria-expanded="false"
+              aria-controls="adminSubmenu"
+            >
+              <span class="nav-text"><i class="fas fa-cog"></i> Settings</span>
+              <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <div class="collapse submenu" id="settingsMenu">
+              <a href="#">Salary</a>
+              <a href="#">Late Deduct</a>
+              <a href="#">Leave</a>
+              <a href="#">Grace Time</a>
+              <a href="#">OT</a>
+              <a href="#">Maternity</a>
+              <a href="#">Bonus</a>
+              <a href="#">Others</a>
+            </div>
+          </li>
+          {% endif %}
+        </ul>
 
-        <!-- Main Content -->
-        <div class="content">
-            {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endfor %}
-            {% endif %}
+        <hr />
 
-            {% block content %}{% endblock %}
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-user-circle fa-lg me-2"></i>
+            <strong>{{ user.get_full_name }}</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li>
+              <a class="dropdown-item" href="#"
+                ><i class="fas fa-user"></i> Profile</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                ><i class="fas fa-key"></i> Change Password</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        {% if messages %} {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        {% endfor %} {% endif %} {% block content %}{% endblock %}
+      </div>
     </div>
 
     <!-- Footer -->
-   <footer class="footer bg-light text-center text-muted py-3 shadow-sm">
-  <div class="container">
-    <small>© {{ now|date:"Y" }} Your Company Name — All rights reserved.</small>
-  </div>
-</footer>
+    <footer class="footer bg-light text-center text-muted py-3 shadow-sm">
+      <div class="container">
+        <small
+          >© {{ now|date:"Y" }} Your Company Name — All rights reserved.</small
+        >
+      </div>
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -305,99 +359,119 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 
     <script>
-        // Sidebar toggle for mobile
-        document.getElementById("sidebarToggle").addEventListener("click", function () {
-            document.getElementById("sidebar").classList.toggle("show");
+      // Sidebar toggle for mobile
+      document
+        .getElementById("sidebarToggle")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("show");
         });
     </script>
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
+        /**
+         * Generic function to enable cloning rows inside a container.
+         * - addButtonSelector: selector for the "+ add" button
+         * - containerSelector: selector of the container which holds rows
+         * - rowSelector: selector of the single row to clone inside container
+         */
+        function enableDynamicRows(
+          addButtonSelector,
+          containerSelector,
+          rowSelector
+        ) {
+          const addBtn = document.querySelector(addButtonSelector);
+          const container = document.querySelector(containerSelector);
 
-  /**
-   * Generic function to enable cloning rows inside a container.
-   * - addButtonSelector: selector for the "+ add" button
-   * - containerSelector: selector of the container which holds rows
-   * - rowSelector: selector of the single row to clone inside container
-   */
-  function enableDynamicRows(addButtonSelector, containerSelector, rowSelector) {
-    const addBtn = document.querySelector(addButtonSelector);
-    const container = document.querySelector(containerSelector);
+          if (!addBtn || !container) return;
 
-    if (!addBtn || !container) return;
+          addBtn.addEventListener("click", () => {
+            const firstRow = container.querySelector(rowSelector);
+            if (!firstRow) return;
 
-    addBtn.addEventListener('click', () => {
-      const firstRow = container.querySelector(rowSelector);
-      if (!firstRow) return;
+            const newRow = firstRow.cloneNode(true);
 
-      const newRow = firstRow.cloneNode(true);
+            // Clear values for inputs/select/textarea in the cloned row
+            newRow
+              .querySelectorAll("input, select, textarea")
+              .forEach((field) => {
+                // if checkbox/radio, uncheck
+                if (field.type === "checkbox" || field.type === "radio") {
+                  field.checked = false;
+                } else {
+                  field.value = "";
+                }
 
-      // Clear values for inputs/select/textarea in the cloned row
-      newRow.querySelectorAll('input, select, textarea').forEach(field => {
-        // if checkbox/radio, uncheck
-        if (field.type === 'checkbox' || field.type === 'radio') {
-          field.checked = false;
-        } else {
-          field.value = '';
-        }
+                // If you have file inputs, reset them safely
+                if (field.type === "file") {
+                  field.value = "";
+                }
+              });
 
-        // If you have file inputs, reset them safely
-        if (field.type === 'file') {
-          field.value = '';
-        }
-      });
+            // Remove any existing remove button in the cloned row (to avoid duplicates)
+            const existingRemove = newRow.querySelector(".remove-row");
+            if (existingRemove) existingRemove.remove();
 
-      // Remove any existing remove button in the cloned row (to avoid duplicates)
-      const existingRemove = newRow.querySelector('.remove-row');
-      if (existingRemove) existingRemove.remove();
+            // Append a remove button to the cloned row
+            const removeDiv = document.createElement("div");
+            removeDiv.className = "col-md-12 mb-3";
+            removeDiv.innerHTML = `<button type="button" class="btn btn-danger remove-row">-</button>`;
+            newRow.appendChild(removeDiv);
 
-      // Append a remove button to the cloned row
-      const removeDiv = document.createElement('div');
-      removeDiv.className = 'col-md-12 mb-3';
-      removeDiv.innerHTML = `<button type="button" class="btn btn-danger remove-row">-</button>`;
-      newRow.appendChild(removeDiv);
+            container.appendChild(newRow);
 
-      container.appendChild(newRow);
-
-      // Optionally scroll into view
-      newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
-
-    // Delegate remove clicks
-    container.addEventListener('click', function(e) {
-      if (e.target.classList.contains('remove-row')) {
-        const row = e.target.closest(rowSelector);
-        if (!row) return;
-
-        // Prevent removing the last remaining row (optional)
-        const allRows = container.querySelectorAll(rowSelector);
-        if (allRows.length === 1) {
-          // If you want to allow removing all rows, comment this block out
-          // or clear the fields instead of removing.
-          row.querySelectorAll('input, select, textarea').forEach(field => {
-            if (field.type === 'checkbox' || field.type === 'radio') field.checked = false;
-            else field.value = '';
+            // Optionally scroll into view
+            newRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
           });
-          return;
+
+          // Delegate remove clicks
+          container.addEventListener("click", function (e) {
+            if (e.target.classList.contains("remove-row")) {
+              const row = e.target.closest(rowSelector);
+              if (!row) return;
+
+              // Prevent removing the last remaining row (optional)
+              const allRows = container.querySelectorAll(rowSelector);
+              if (allRows.length === 1) {
+                // If you want to allow removing all rows, comment this block out
+                // or clear the fields instead of removing.
+                row
+                  .querySelectorAll("input, select, textarea")
+                  .forEach((field) => {
+                    if (field.type === "checkbox" || field.type === "radio")
+                      field.checked = false;
+                    else field.value = "";
+                  });
+                return;
+              }
+
+              row.remove();
+            }
+          });
         }
 
-        row.remove();
-      }
-    });
-  }
+        // Enable for Experience (keeps backward compatibility with your existing IDs/classes)
+        enableDynamicRows(
+          "#add-experience",
+          "#experience-container",
+          ".experience-row"
+        );
 
-  // Enable for Experience (keeps backward compatibility with your existing IDs/classes)
-  enableDynamicRows('#add-experience', '#experience-container', '.experience-row');
-
-  // Enable for Education
-  enableDynamicRows('#add-education', '#educations-container', '.educations-row');
-  // Enable for Trainig
-  enableDynamicRows('#add-training', '#training-container', '.training-row');
-
-});
-</script>
-
+        // Enable for Education
+        enableDynamicRows(
+          "#add-education",
+          "#educations-container",
+          ".educations-row"
+        );
+        // Enable for Trainig
+        enableDynamicRows(
+          "#add-training",
+          "#training-container",
+          ".training-row"
+        );
+      });
+    </script>
 
     {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>

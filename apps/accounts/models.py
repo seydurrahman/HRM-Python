@@ -176,11 +176,19 @@ class SubSection(models.Model):
 
 
 class Floor(models.Model):
-    subsection = models.ForeignKey(SubSection, on_delete=models.CASCADE, related_name='floors')
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20, blank=True, null=True)
+    subsection = models.ForeignKey('SubSection', on_delete=models.CASCADE, related_name='floors')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        unique_together = ['name', 'subsection']
 
     def __str__(self):
-        return f"{self.subsection} - {self.name}"
+        return f"{self.name} ({self.subsection.section.department.division.unit.name})"
 
 
 class Line(models.Model):

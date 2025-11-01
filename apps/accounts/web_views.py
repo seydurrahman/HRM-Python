@@ -578,3 +578,89 @@ def get_departments_by_division(request):
         return JsonResponse({'status':'error','message':'Division ID required'}, status=400)
     departments = Department.objects.filter(division_id=division_id, is_active=True).values('id','name').order_by('name')
     return JsonResponse({'status':'success','departments': list(departments)})
+
+
+
+@login_required
+def create_floor(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        subsection_id = request.POST.get("subsection_id")
+        code = request.POST.get("code")
+        is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
+
+        if not all([name, subsection_id]):
+            messages.error(request, "Please fill all required fields.")
+            return redirect("accounts:create_floor")
+
+        try:
+            subsection = SubSection.objects.get(id=subsection_id)
+
+            # Check if floor with same name exists in this subsection
+            if Floor.objects.filter(name__iexact=name, subsection=subsection).exists():
+                messages.error(request, "A floor with this name already exists in the selected subsection.")
+            else:
+                Floor.objects.create(
+                    name=name,
+                    subsection=subsection,
+                    code=code,
+                    is_active=is_active
+                )
+                messages.success(request, "Floor created successfully!")
+                return redirect("accounts:floor_list")
+
+        except SubSection.DoesNotExist:
+            messages.error(request, "Selected subsection does not exist.")
+        except Exception as e:
+            messages.error(request, f"Error creating floor: {str(e)}")
+
+    groups = CustomGroup.objects.filter(is_active=True).order_by('name')
+    return render(request, "floor/create_floor.html", {"groups": groups})
+
+@login_required
+def floor_list(request):
+    floors = Floor.objects.select_related(
+        'subsection__section__department__division__company_unit__group'
+    ).all().order_by('name')
+    return render(request, "floor/floor_list.html", {"floors": floors})
+
+@login_required
+def toggle_floor_status(request, floor_id):
+    try:
+        floor = get_object_or_404(Floor, id=floor_id)
+        floor.is_active = not floor.is_active
+        floor.save()
+        
+        status = "activated" if floor.is_active else "deactivated"
+        messages.success(request, f"Floor {status} successfully!")
+        
+    except Exception as e:
+        messages.error(request, f"Error toggling floor status: {str(e)}")
+        
+    return redirect("accounts:floor_list")
+
+@login_required
+def get_subsections_by_section(request):
+    try:
+        section_id = request.GET.get('section_id')
+        if not section_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Section ID is required'
+            }, status=400)
+
+        subsections = SubSection.objects.filter(
+            section_id=section_id,
+            is_active=True
+        ).values('id', 'name').order_by('name')
+        
+        return JsonResponse({
+            'status': 'success',
+            'subsections': list(subsections)
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
