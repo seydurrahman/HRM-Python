@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from apps.accounts.models import User,CompanyUnit, Department, Designation, Section
+from apps.accounts.models import User,CompanyUnit,Division, Department,Section,SubSection,Floor,Line, Designation
 from multiselectfield import MultiSelectField
 from django_countries.fields import CountryField
 
@@ -88,12 +88,12 @@ class Employee(models.Model):
     employee_id = models.CharField(max_length=20, unique=True)
     designation = models.ForeignKey(Designation, on_delete=models.PROTECT, related_name='employees')
     unit = models.ForeignKey(CompanyUnit, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
-    division = models.CharField(max_length=100, blank=True, null=True)
-    department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='employees')
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
-    sub_section = models.CharField(max_length=100, blank=True, null=True)
-    floor = models.CharField(max_length=50, blank=True, null=True)
-    line = models.CharField(max_length=50, blank=True, null=True)
+    sub_section = models.ForeignKey(SubSection, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
+    floor = models.ForeignKey(Floor, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
+    line = models.ForeignKey(Line, on_delete=models.PROTECT, related_name='employees', null=True, blank=True)
     mobile_number = models.CharField(max_length=15)
     photo = models.ImageField(upload_to='employee_photos/', null=True, blank=True)
 

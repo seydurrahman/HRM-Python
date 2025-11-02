@@ -152,8 +152,20 @@
                 {{ form.unit.label_tag }} {{ form.unit }}
               </div>
               <div class="col-md-4 mb-3">
-                {{ form.division.label_tag }} {{ form.division }}
-              </div>
+    {{ form.division.label_tag }} 
+    {{ form.division }}
+    {% if form.division.errors %}
+        <div class="text-danger">
+            {% for error in form.division.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <!-- Debug info -->
+    <small class="form-text text-muted">
+        Options: {{ form.division.field.queryset.count }}
+    </small>
+</div>
               <div class="col-md-4 mb-3">
                 {{ form.department.label_tag }} {{ form.department }}
               </div>
@@ -1131,6 +1143,44 @@
         </div>
 
       </form>
+      <script>
+// Using fetch API; no jQuery needed. Works for GET requests.
+document.addEventListener('DOMContentLoaded', function() {
+  const companyUnitSelect = document.getElementById('id_unit');
+  const divisionSelect = document.getElementById('id_division');
+
+  if (!companyUnitSelect) return;
+
+  companyUnitSelect.addEventListener('change', function() {
+    const companyUnitId = this.value;
+    // clear current options
+    divisionSelect.innerHTML = '<option value="">---------</option>';
+
+    if (!companyUnitId) {
+      return; // nothing selected
+    }
+
+    const url = "{% url 'employees:ajax_load_divisions' %}?unit=" + companyUnitId;
+    fetch(url, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      data.divisions.forEach(function(d) {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.text = d.name;
+        divisionSelect.appendChild(opt);
+      });
+    })
+    .catch(err => {
+      console.error('Error loading divisions:', err);
+    });
+  });
+});
+</script>
     </div>
   </div>
 </div>

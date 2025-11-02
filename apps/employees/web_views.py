@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Employee
 from .forms import EmployeeForm
-from apps.accounts.models import User
+from apps.accounts.models import User, CompanyUnit, Division, Department, Section, SubSection, Floor, Line
+from django.http import JsonResponse
 
 @login_required
 def employee_list_view(request):
@@ -103,3 +104,14 @@ def employee_delete_view(request, pk):
         'employee': employee
     }
     return render(request, "employees/employee_confirm_delete.html", context)
+
+@login_required
+def ajax_load_divisions(request):
+    company_unit_id = request.GET.get('unit')  # ?company_unit=1
+    if company_unit_id:
+        divisions = Division.objects.filter(company_unit_id=company_unit_id, is_active=True).order_by('name')
+    else:
+        divisions = Division.objects.none()
+
+    data = [{'id': d.id, 'name': d.name} for d in divisions]
+    return JsonResponse({'divisions': data})
