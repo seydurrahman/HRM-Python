@@ -44,4 +44,21 @@ urlpatterns = [
     path('floor/', web_views.floor_list, name='floor_list'),
     path('floor/<int:floor_id>/toggle/', web_views.toggle_floor_status, name='toggle_floor_status'),
     path('ajax/subsections-by-section/', web_views.get_subsections_by_section, name='get_subsections_by_section'),
+
+    path("floor/create/", web_views.create_floor, name="create_floor"),
+    path("floor/list/", web_views.floor_list, name="floor_list"),
+    path("floor/toggle-status/<int:floor_id>/", web_views.toggle_floor_status, name="toggle_floor_status"),
+
+    # ✅ Line URLs
+    path("line/create/", web_views.create_line, name="create_line"),
+    path("line/list/", web_views.line_list, name="line_list"),
+    path("line/toggle-status/<int:line_id>/", web_views.toggle_line_status, name="toggle_line_status"),
+
+    # ✅ AJAX endpoints for cascading dropdowns (reuse existing ones or add missing)
+    path("get-company-units/", web_views.get_company_units_by_group, name="get_company_units_by_group"),
+    path("get-divisions/", web_views.get_divisions_by_company_unit, name="get_divisions_by_company_unit"),
+    path("get-departments/", web_views.get_departments_by_division, name="get_departments_by_division"),
+    path("get-sections/", web_views.get_sections_by_department, name="get_sections_by_department"),
+    path("get-subsections/", web_views.get_subsections_by_section, name="get_subsections_by_section"),
+    path("get-floors/", web_views.get_floors_by_subsection, name="get_floors_by_subsection"),
 ]

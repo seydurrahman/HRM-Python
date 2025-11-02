@@ -194,6 +194,7 @@ class Floor(models.Model):
 class Line(models.Model):
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name='lines')
     name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.floor} - {self.name}"

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Create Line{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="card shadow-sm p-4">
+    <h4 class="fw-semibold mb-4">
+      <i class="fas fa-stream me-2 text-primary"></i>
+      Create Line
+    </h4>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" id="lineForm">
+      {% csrf_token %}
+
+      <!-- Line Names with + button -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Line Name(s) <span class="text-danger">*</span></label>
+        <div id="lineContainer">
+          <div class="input-group mb-2">
+            <input type="text" name="line_names[]" class="form-control" placeholder="Enter line name" required>
+            <button type="button" class="btn btn-outline-primary add-line">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hierarchy Dropdowns -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Group <span class="text-danger">*</span></label>
+          <select id="group_id" name="group_id" class="form-select" required>
+            <option value="">-- Select Group --</option>
+            {% for g in groups %}
+              <option value="{{ g.id }}">{{ g.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Unit <span class="text-danger">*</span></label>
+          <select id="unit_id" class="form-select" required disabled>
+            <option value="">-- First Select Group --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Division <span class="text-danger">*</span></label>
+          <select id="division_id" class="form-select" required disabled>
+            <option value="">-- First Select Unit --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Department <span class="text-danger">*</span></label>
+          <select id="department_id" class="form-select" required disabled>
+            <option value="">-- First Select Division --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Section <span class="text-danger">*</span></label>
+          <select id="section_id" class="form-select" required disabled>
+            <option value="">-- First Select Department --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Subsection <span class="text-danger">*</span></label>
+          <select id="subsection_id" class="form-select" required disabled>
+            <option value="">-- First Select Section --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Select Floor <span class="text-danger">*</span></label>
+          <select id="floor_id" name="floor_id" class="form-select" required disabled>
+            <option value="">-- First Select Subsection --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-check mb-4">
+        <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
+        <label class="form-check-label" for="is_active">Active</label>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="fas fa-save me-1"></i> Create Line(s)
+        </button>
+        <a href="{% url 'accounts:line_list' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-list me-1"></i> View Line List
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Dynamic line add/remove
+  const lineContainer = document.getElementById("lineContainer");
+  lineContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("add-line")) {
+      const newInput = document.createElement("div");
+      newInput.className = "input-group mb-2";
+      newInput.innerHTML = `
+        <input type="text" name="line_names[]" class="form-control" placeholder="Enter line name" required>
+        <button type="button" class="btn btn-outline-danger remove-line">–</button>
+      `;
+      lineContainer.appendChild(newInput);
+    } else if (e.target.classList.contains("remove-line")) {
+      e.target.closest(".input-group").remove();
+    }
+  });
+
+  // Dropdown chain logic
+  const group = document.getElementById("group_id");
+  const unit = document.getElementById("unit_id");
+  const division = document.getElementById("division_id");
+  const department = document.getElementById("department_id");
+  const section = document.getElementById("section_id");
+  const subsection = document.getElementById("subsection_id");
+  const floor = document.getElementById("floor_id");
+
+  group.addEventListener("change", () => loadOptions("unit", group.value));
+  unit.addEventListener("change", () => loadOptions("division", unit.value));
+  division.addEventListener("change", () => loadOptions("department", division.value));
+  department.addEventListener("change", () => loadOptions("section", department.value));
+  section.addEventListener("change", () => loadOptions("subsection", section.value));
+  subsection.addEventListener("change", () => loadOptions("floor", subsection.value));
+
+  async function loadOptions(type, id) {
+    const urls = {
+      unit: "/accounts/get-company-units/?group_id=" + id,
+      division: "/accounts/get-divisions/?company_unit_id=" + id,
+      department: "/accounts/get-departments/?division_id=" + id,
+      section: "/accounts/get-sections/?department_id=" + id,
+      subsection: "/accounts/get-subsections/?section_id=" + id,
+      floor: "/accounts/get-floors/?subsection_id=" + id
+    };
+    const dropdowns = { unit, division, department, section, subsection, floor };
+    const nextSelect = dropdowns[type];
+    nextSelect.innerHTML = "<option>Loading...</option>";
+    try {
+      const res = await fetch(urls[type]);
+      const data = await res.json();
+      nextSelect.innerHTML = "<option value=''>-- Select --</option>";
+      const listKey = Object.keys(data).find(k => Array.isArray(data[k]));
+      data[listKey].forEach(item => {
+        nextSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+      });
+      nextSelect.disabled = false;
+    } catch (err) {
+      nextSelect.innerHTML = "<option>Error loading</option>";
+      nextSelect.disabled = true;
+    }
+  }
+});
+</script>
+{% endblock %}
+{% endblock %}

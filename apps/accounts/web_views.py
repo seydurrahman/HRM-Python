@@ -664,3 +664,134 @@ def get_subsections_by_section(request):
             'status': 'error',
             'message': str(e)
         }, status=400)
+    
+# create line
+
+@login_required
+def create_line(request):
+    if request.method == "POST":
+        floor_id = request.POST.get("floor_id")
+        line_names = request.POST.getlist("line_names[]")  # Expect multiple line names
+        is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
+
+        if not floor_id or not line_names:
+            messages.error(request, "Please fill all required fields.")
+            return redirect("accounts:create_line")
+
+        try:
+            floor = Floor.objects.get(id=floor_id)
+
+            for name in line_names:
+                name = name.strip()
+                if not name:
+                    continue
+                # Avoid duplicates within same floor
+                if not Line.objects.filter(name__iexact=name, floor=floor).exists():
+                    Line.objects.create(name=name, floor=floor, is_active=is_active)
+
+            messages.success(request, "Lines created successfully!")
+            return redirect("accounts:line_list")
+
+        except Floor.DoesNotExist:
+            messages.error(request, "Selected floor does not exist.")
+        except Exception as e:
+            messages.error(request, f"Error creating lines: {str(e)}")
+
+    groups = CustomGroup.objects.filter(is_active=True).order_by('name')
+    return render(request, "line/create_line.html", {"groups": groups})
+
+@login_required
+def line_list(request):
+    lines = Line.objects.select_related(
+        'floor__subsection__section__department__division__company_unit__group'
+    ).order_by('name')
+    return render(request, "line/line_list.html", {"lines": lines})
+
+@login_required
+def toggle_line_status(request, line_id):
+    try:
+        line = get_object_or_404(Line, id=line_id)
+        line.is_active = not line.is_active
+        line.save()
+        status = "activated" if line.is_active else "deactivated"
+        messages.success(request, f"Line {status} successfully!")
+    except Exception as e:
+        messages.error(request, f"Error toggling line status: {str(e)}")
+    return redirect("accounts:line_list")
+
+@login_required
+def get_company_units_by_group(request):
+    try:
+        group_id = request.GET.get('group_id')
+        if not group_id:
+            return JsonResponse({'status': 'error', 'message': 'Group ID is required'}, status=400)
+
+        units = CompanyUnit.objects.filter(group_id=group_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'units': list(units)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def get_divisions_by_company_unit(request):
+    try:
+        company_unit_id = request.GET.get('company_unit_id')
+        if not company_unit_id:
+            return JsonResponse({'status': 'error', 'message': 'Company Unit ID is required'}, status=400)
+
+        divisions = Division.objects.filter(company_unit_id=company_unit_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'divisions': list(divisions)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def get_departments_by_division(request):
+    try:
+        division_id = request.GET.get('division_id')
+        if not division_id:
+            return JsonResponse({'status': 'error', 'message': 'Division ID is required'}, status=400)
+
+        departments = Department.objects.filter(division_id=division_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'departments': list(departments)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def get_sections_by_department(request):
+    try:
+        department_id = request.GET.get('department_id')
+        if not department_id:
+            return JsonResponse({'status': 'error', 'message': 'Department ID is required'}, status=400)
+
+        sections = Section.objects.filter(department_id=department_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'sections': list(sections)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def get_subsections_by_section(request):
+    try:
+        section_id = request.GET.get('section_id')
+        if not section_id:
+            return JsonResponse({'status': 'error', 'message': 'Section ID is required'}, status=400)
+
+        subsections = SubSection.objects.filter(section_id=section_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'subsections': list(subsections)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def get_floors_by_subsection(request):
+    try:
+        subsection_id = request.GET.get('subsection_id')
+        if not subsection_id:
+            return JsonResponse({'status': 'error', 'message': 'Subsection ID is required'}, status=400)
+
+        floors = Floor.objects.filter(subsection_id=subsection_id, is_active=True).values('id', 'name').order_by('name')
+        return JsonResponse({'status': 'success', 'floors': list(floors)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

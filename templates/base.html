@@ -261,7 +261,7 @@
               <a href="{% url 'accounts:section_list' %}">Section</a>
               <a href="{% url 'accounts:subsection_list' %}">Sub-Section</a>
               <a href="{% url 'accounts:floor_list' %}">Floor</a>
-              <a href="#">Line</a>
+              <a href="{% url 'accounts:line_list' %}">Line</a>
             </div>
           </li>
           {% endif %} {% if user.is_hr or user.is_admin %}
