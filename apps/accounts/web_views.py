@@ -9,6 +9,8 @@ from .models import CustomGroup,CompanyUnit,Division,Department, Section,SubSect
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from .models import Designation, Department
+from .forms import DesignationForm
 
 
 def web_login_view(request):
@@ -795,3 +797,29 @@ def get_floors_by_subsection(request):
         return JsonResponse({'status': 'success', 'floors': list(floors)})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+# Create Designation
+
+
+def create_designation(request):
+    if request.method == 'POST':
+        form = DesignationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Designation created successfully!')
+            return redirect('accounts:designation_list')
+    else:
+        form = DesignationForm()
+    return render(request, 'designation/create_designation.html', {'form': form})
+
+def designation_list(request):
+    designations = Designation.objects.select_related('department').order_by('level')
+    return render(request, 'designation/designation_list.html', {'designations': designations})
+
+def toggle_designation_status(request, pk):
+    designation = get_object_or_404(Designation, pk=pk)
+    designation.is_active = not designation.is_active
+    designation.save()
+    messages.success(request, f"Designation '{designation.title}' status updated successfully!")
+    return redirect('accounts:designation_list')

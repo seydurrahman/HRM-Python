@@ -61,4 +61,9 @@ urlpatterns = [
     path("get-sections/", web_views.get_sections_by_department, name="get_sections_by_department"),
     path("get-subsections/", web_views.get_subsections_by_section, name="get_subsections_by_section"),
     path("get-floors/", web_views.get_floors_by_subsection, name="get_floors_by_subsection"),
+
+    path('designations/', web_views.designation_list, name='designation_list'),
+    path('designations/create/', web_views.create_designation, name='create_designation'),
+    path('designation/toggle-status/<int:pk>/', web_views.toggle_designation_status, name='toggle_designation_status'),
+
 ]

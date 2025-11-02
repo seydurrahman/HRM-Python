@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import password_validation
 from .models import User
+from .models import Designation
 
 class LoginForm(forms.Form):
     """User Login Form"""
@@ -111,3 +112,16 @@ class ProfileUpdateForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
         }
 
+
+class DesignationForm(forms.ModelForm):
+    class Meta:
+        model = Designation
+        fields = [
+            'title', 'code', 'department', 'level',
+            'description', 'responsibilities',
+            'min_salary', 'max_salary', 'is_active'
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'responsibilities': forms.Textarea(attrs={'rows': 3}),
+        }
