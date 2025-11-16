@@ -149,49 +149,56 @@
                 {{ form.designation.label_tag }} {{ form.designation }}
               </div>
               <div class="col-md-4 mb-3">
-                {{ form.unit.label_tag }} {{ form.unit }}
-              </div>
-              <div class="col-md-4 mb-3">
-    {{ form.division.label_tag }} 
-    {{ form.division }}
-    {% if form.division.errors %}
-        <div class="text-danger">
-            {% for error in form.division.errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <!-- Debug info -->
-    <small class="form-text text-muted">
-        Options: {{ form.division.field.queryset.count }}
-    </small>
-</div>
-              <div class="col-md-4 mb-3">
-                {{ form.department.label_tag }} {{ form.department }}
-              </div>
-              <div class="col-md-4 mb-3">
-                {{ form.section.label_tag }} {{ form.section }}
-              </div>
-              <div class="col-md-4 mb-3">
-                {{ form.sub_section.label_tag }} {{ form.sub_section }}
-              </div>
-              <div class="col-md-4 mb-3">
-                {{ form.floor.label_tag }} {{ form.floor }}
-              </div>
-              <div class="col-md-4 mb-3">
-                {{ form.line.label_tag }} {{ form.line }}
-              </div>
+        {{ form.unit.label_tag }}
+        {{ form.unit }}
+      </div>
+
+      <!-- Division -->
+      <div class="col-md-4 mb-3">
+        {{ form.division.label_tag }}
+        {{ form.division }}
+      </div>
+
+      <!-- Department -->
+      <div class="col-md-4 mb-3">
+        {{ form.department.label_tag }}
+        {{ form.department }}
+      </div>
+
+      <!-- Section -->
+      <div class="col-md-4 mb-3">
+        {{ form.section.label_tag }}
+        {{ form.section }}
+      </div>
+
+      <!-- SubSection -->
+      <div class="col-md-4 mb-3">
+        {{ form.sub_section.label_tag }}
+        {{ form.sub_section }}
+      </div>
+
+      <!-- Floor -->
+      <div class="col-md-4 mb-3">
+        {{ form.floor.label_tag }}
+        {{ form.floor }}
+      </div>
+
+      <!-- Line -->
+      <div class="col-md-4 mb-3">
+        {{ form.line.label_tag }}
+        {{ form.line }}
+      </div>
               <div class="col-md-4 mb-3">
                 {{ form.mobile_number.label_tag }} {{ form.mobile_number }}
               </div>
               <div class="col-md-3 mb-3">
                 {{ form.photo.label_tag }} {{ form.photo }}
               </div>
-              {% comment %}
+              
               <div class="col-md-4 mb-3">
                 {{ form.email.label_tag }} {{ form.email }}
               </div>
-              {% endcomment %}
+            
             </div>
           </div>
 
@@ -1143,83 +1150,34 @@
         </div>
 
       </form>
-      <script>
-// Wait for the document to be ready
-document.addEventListener('DOMContentLoaded', function() {
-    const unitSelect = document.getElementById('id_unit');
-    const divisionSelect = document.getElementById('id_division');
-    const departmentSelect = document.getElementById('id_department');
-    
-    // Function to clear and disable a select element
-    function clearSelect(selectElement) {
-        selectElement.innerHTML = '<option value="">---------</option>';
-        selectElement.disabled = true;
-    }
-    
-    // Function to populate a select element
-    function populateSelect(selectElement, data) {
-        selectElement.innerHTML = '<option value="">---------</option>';
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = item.name;
-            selectElement.appendChild(option);
-        });
-        selectElement.disabled = false;
-    }
-    
-    // Unit change event
-    if (unitSelect) {
-        unitSelect.addEventListener('change', function() {
-            const unitId = this.value;
-            
-            // Clear division and department
-            clearSelect(divisionSelect);
-            clearSelect(departmentSelect);
-            
-            if (unitId) {
-                // Fetch divisions for the selected unit - using employees app URL
-                fetch(`/employees/get-divisions/?unit_id=${unitId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        populateSelect(divisionSelect, data);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching divisions:', error);
+            <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    function setupCascading(parentId, childId, url) {
+        const parent = document.getElementById(parentId);
+        const child = document.getElementById(childId);
+
+        parent.addEventListener('change', function() {
+            const value = parent.value;
+            fetch(`${url}?${parentId}=${value}`)
+                .then(response => response.json())
+                .then(data => {
+                    child.innerHTML = '';
+                    child.insertAdjacentHTML('beforeend', '<option value="">---------</option>');
+                    data[childId].forEach(item => {
+                        child.insertAdjacentHTML('beforeend', `<option value="${item.id}">${item.name}</option>`);
                     });
-            }
+                });
         });
     }
-    
-    // Division change event
-    if (divisionSelect) {
-        divisionSelect.addEventListener('change', function() {
-            const divisionId = this.value;
-            
-            // Clear department
-            clearSelect(departmentSelect);
-            
-            if (divisionId) {
-                // Fetch departments for the selected division - using employees app URL
-                fetch(`/employees/get-departments/?division_id=${divisionId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        populateSelect(departmentSelect, data);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching departments:', error);
-                    });
-            }
-        });
-    }
-    
-    // Initialize the form state
-    if (unitSelect && !unitSelect.value) {
-        clearSelect(divisionSelect);
-        clearSelect(departmentSelect);
-    }
+
+    setupCascading('id_unit', 'id_division', '{% url "employees:ajax_load_divisions" %}');
+    setupCascading('id_division', 'id_department', '{% url "employees:ajax_load_departments" %}');
+    setupCascading('id_department', 'id_section', '{% url "employees:ajax_load_sections" %}');
+    setupCascading('id_section', 'id_sub_section', '{% url "employees:ajax_load_sub_sections" %}');
+    setupCascading('id_sub_section', 'id_floor', '{% url "employees:ajax_load_floors" %}');
+    setupCascading('id_floor', 'id_line', '{% url "employees:ajax_load_lines" %}');
 });
-</script>
+      </script>
     </div>
   </div>
 </div>
