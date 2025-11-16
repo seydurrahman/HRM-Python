@@ -1144,41 +1144,80 @@
 
       </form>
       <script>
-// Using fetch API; no jQuery needed. Works for GET requests.
+// Wait for the document to be ready
 document.addEventListener('DOMContentLoaded', function() {
-  const companyUnitSelect = document.getElementById('id_unit');
-  const divisionSelect = document.getElementById('id_division');
-
-  if (!companyUnitSelect) return;
-
-  companyUnitSelect.addEventListener('change', function() {
-    const companyUnitId = this.value;
-    // clear current options
-    divisionSelect.innerHTML = '<option value="">---------</option>';
-
-    if (!companyUnitId) {
-      return; // nothing selected
+    const unitSelect = document.getElementById('id_unit');
+    const divisionSelect = document.getElementById('id_division');
+    const departmentSelect = document.getElementById('id_department');
+    
+    // Function to clear and disable a select element
+    function clearSelect(selectElement) {
+        selectElement.innerHTML = '<option value="">---------</option>';
+        selectElement.disabled = true;
     }
-
-    const url = "{% url 'employees:ajax_load_divisions' %}?unit=" + companyUnitId;
-    fetch(url, {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      data.divisions.forEach(function(d) {
-        const opt = document.createElement('option');
-        opt.value = d.id;
-        opt.text = d.name;
-        divisionSelect.appendChild(opt);
-      });
-    })
-    .catch(err => {
-      console.error('Error loading divisions:', err);
-    });
-  });
+    
+    // Function to populate a select element
+    function populateSelect(selectElement, data) {
+        selectElement.innerHTML = '<option value="">---------</option>';
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            selectElement.appendChild(option);
+        });
+        selectElement.disabled = false;
+    }
+    
+    // Unit change event
+    if (unitSelect) {
+        unitSelect.addEventListener('change', function() {
+            const unitId = this.value;
+            
+            // Clear division and department
+            clearSelect(divisionSelect);
+            clearSelect(departmentSelect);
+            
+            if (unitId) {
+                // Fetch divisions for the selected unit - using employees app URL
+                fetch(`/employees/get-divisions/?unit_id=${unitId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        populateSelect(divisionSelect, data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching divisions:', error);
+                    });
+            }
+        });
+    }
+    
+    // Division change event
+    if (divisionSelect) {
+        divisionSelect.addEventListener('change', function() {
+            const divisionId = this.value;
+            
+            // Clear department
+            clearSelect(departmentSelect);
+            
+            if (divisionId) {
+                // Fetch departments for the selected division - using employees app URL
+                fetch(`/employees/get-departments/?division_id=${divisionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        populateSelect(departmentSelect, data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching departments:', error);
+                    });
+            }
+        });
+    }
+    
+    // Initialize the form state
+    if (unitSelect && !unitSelect.value) {
+        clearSelect(divisionSelect);
+        clearSelect(departmentSelect);
+    }
 });
 </script>
     </div>

@@ -198,49 +198,54 @@ def toggle_unit_status(request, unit_id):
 @login_required
 def create_division(request):
     groups = CustomGroup.objects.filter(is_active=True).order_by('name')
-    
+
     if request.method == "POST":
         name = request.POST.get("name")
         code = request.POST.get("code")
         group_id = request.POST.get("group_id")
         unit_id = request.POST.get("unit_id")
         is_active = request.POST.get("is_active") in ("on", "1", "true", "True")
-        
+
+        # Validation
         if not all([name, group_id, unit_id]):
             messages.error(request, "Please fill all required fields.")
             return redirect("accounts:create_division")
-            
+
         try:
+            # Fetch the company unit under the selected group
             company_unit = CompanyUnit.objects.get(id=unit_id, group_id=group_id)
-            
-            # ✅ use correct field name: company_unit
+
+            # Check duplicate division inside this specific unit
             if Division.objects.filter(name__iexact=name, company_unit=company_unit).exists():
                 messages.error(request, "A division with this name already exists in the selected unit.")
                 return redirect("accounts:create_division")
-                
-            # ✅ also assign company_unit instead of unit
+
+            # Create division (❗ remove group_id — Division has no group field)
             division = Division.objects.create(
                 name=name,
                 code=code,
-                group_id=group_id,
-                company_unit=company_unit,
+                company_unit=company_unit,  # correct FK
                 is_active=is_active
             )
+
             messages.success(request, "Division created successfully!")
             return redirect("accounts:division_list")
-            
+
         except CompanyUnit.DoesNotExist:
             messages.error(request, "Invalid company unit selected.")
         except Exception as e:
             messages.error(request, f"Error creating division: {str(e)}")
-    
+
     return render(request, "division/create_division.html", {
         "groups": groups
     })
 
 @login_required
 def division_list(request):
-    divisions = Division.objects.select_related("group", "company_unit").order_by("id")
+    divisions = Division.objects.select_related(
+        "company_unit", 
+        "company_unit__group"
+    ).order_by("id")
 
     paginator = Paginator(divisions, 10)
     page_number = request.GET.get("page")
@@ -248,15 +253,6 @@ def division_list(request):
 
     context = {"divisions": page_obj}
     return render(request, "division/division_list.html", context)
-
-@login_required
-def get_units_by_group(request):
-    group_id = request.GET.get("group_id")
-    if not group_id:
-        return JsonResponse({"units": []})
-
-    units = CompanyUnit.objects.filter(group_id=group_id, is_active=True).values("id", "name")
-    return JsonResponse({"units": list(units)})
 
 @login_required
 def toggle_division_status(request, division_id):
@@ -273,8 +269,6 @@ def toggle_division_status(request, division_id):
 @login_required
 def create_department(request):
     groups = CustomGroup.objects.filter(is_active=True).order_by("name")
-    units = CompanyUnit.objects.filter(is_active=True).order_by("name")
-    divisions = Division.objects.filter(is_active=True).order_by("name")
 
     if request.method == "POST":
         name = (request.POST.get("name") or "").strip()
@@ -286,44 +280,40 @@ def create_department(request):
 
         if not name:
             messages.error(request, "Department name is required.")
-        elif not group_id or not group_id.isdigit():
-            messages.error(request, "Please select a valid group.")
-        elif not unit_id or not unit_id.isdigit():
-            messages.error(request, "Please select a valid unit.")
-        elif not division_id or not division_id.isdigit():
-            messages.error(request, "Please select a valid division.")
+        elif not group_id or not unit_id or not division_id:
+            messages.error(request, "Please select Group, Unit, and Division.")
         else:
-            group = get_object_or_404(CustomGroup, id=int(group_id))
-            company_unit = get_object_or_404(CompanyUnit, id=int(unit_id))
             division = get_object_or_404(Division, id=int(division_id))
 
             # prevent duplicate department names within same division
             if Department.objects.filter(name__iexact=name, division=division).exists():
                 messages.error(request, "A department with this name already exists in the selected division.")
             else:
-                dept_kwargs = {
-                    "name": name,
-                    "group": group,
-                    "company_unit": company_unit,
-                    "division": division,
-                    "is_active": is_active,
-                }
-                if code:
-                    dept_kwargs["code"] = code
-                Department.objects.create(**dept_kwargs)
+                Department.objects.create(
+                    name=name,
+                    code=code,
+                    division=division,
+                    is_active=is_active
+                )
                 messages.success(request, "Department created successfully!")
                 return redirect("accounts:department_list")
 
-    context = {"groups": groups, "units": units, "divisions": divisions}
-    return render(request, "department/create_department.html", context)
+    return render(request, "department/create_department.html", {"groups": groups})
 
 
 @login_required
 def department_list(request):
-    departments = Department.objects.select_related("group", "company_unit", "division").order_by("id")
+    # chain select_related through FK relationships
+    departments = Department.objects.select_related(
+        "division",
+        "division__company_unit",
+        "division__company_unit__group"
+    ).order_by("id")
+
     paginator = Paginator(departments, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+
     context = {"departments": page_obj}
     return render(request, "department/department_list.html", context)
 

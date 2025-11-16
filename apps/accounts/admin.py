@@ -12,8 +12,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'phone')}),
-        ('Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 
-                                     'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser','groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )
     
@@ -26,10 +25,10 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("name", "code", "group", "company_unit", "division", "is_active")
-    list_filter = ("is_active", "group", "company_unit", "division")
+    list_display = ("name", "code", "division", "is_active")
+    list_filter = ("division", "is_active")
     search_fields = ("name", "code")
-
+    
 @admin.register(Designation)
 class DesignationAdmin(admin.ModelAdmin):
     list_display = ['title', 'code', 'department', 'level', 'min_salary', 'max_salary', 'is_active']

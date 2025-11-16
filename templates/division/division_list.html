@@ -19,7 +19,6 @@
         <th>#</th>
         <th>Name</th>
         <th>Code</th>
-        <th>Group</th>
         <th>Unit</th>
         <th>Active</th>
       </tr>
@@ -30,18 +29,17 @@
         <td>{{ forloop.counter0|add:divisions.start_index }}</td>
         <td>{{ d.name }}</td>
         <td>{{ d.code|default:"—" }}</td>
-        <td>{{ d.group.name }}</td>
         <td>{{ d.company_unit.name }}</td>
         <td>
-          {% if d.is_active %}
-            <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-success text-decoration-none">
-              Yes
-            </a>
-          {% else %}
-            <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-secondary text-decoration-none">
-              No
-            </a>
-          {% endif %}
+            {% if d.is_active %}
+              <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-success text-decoration-none">
+                Yes
+              </a>
+            {% else %}
+              <a href="{% url 'accounts:toggle_division_status' d.id %}" class="badge bg-secondary text-decoration-none">
+                No
+              </a>
+            {% endif %}
         </td>
       </tr>
       {% empty %}
