@@ -149,45 +149,45 @@
                 {{ form.designation.label_tag }} {{ form.designation }}
               </div>
               <div class="col-md-4 mb-3">
-        {{ form.unit.label_tag }}
-        {{ form.unit }}
-      </div>
+                {{ form.unit.label_tag }}
+                {{ form.unit }}
+              </div>
 
-      <!-- Division -->
-      <div class="col-md-4 mb-3">
-        {{ form.division.label_tag }}
-        {{ form.division }}
-      </div>
+              <!-- Division -->
+              <div class="col-md-4 mb-3">
+                {{ form.division.label_tag }}
+                {{ form.division }}
+              </div>
 
-      <!-- Department -->
-      <div class="col-md-4 mb-3">
-        {{ form.department.label_tag }}
-        {{ form.department }}
-      </div>
+              <!-- Department -->
+              <div class="col-md-4 mb-3">
+                {{ form.department.label_tag }}
+                {{ form.department }}
+              </div>
 
-      <!-- Section -->
-      <div class="col-md-4 mb-3">
-        {{ form.section.label_tag }}
-        {{ form.section }}
-      </div>
+              <!-- Section -->
+              <div class="col-md-4 mb-3">
+                {{ form.section.label_tag }}
+                {{ form.section }}
+              </div>
 
-      <!-- SubSection -->
-      <div class="col-md-4 mb-3">
-        {{ form.sub_section.label_tag }}
-        {{ form.sub_section }}
-      </div>
+              <!-- SubSection -->
+              <div class="col-md-4 mb-3">
+                {{ form.sub_section.label_tag }}
+                {{ form.sub_section }}
+              </div>
 
-      <!-- Floor -->
-      <div class="col-md-4 mb-3">
-        {{ form.floor.label_tag }}
-        {{ form.floor }}
-      </div>
+              <!-- Floor -->
+              <div class="col-md-4 mb-3">
+                {{ form.floor.label_tag }}
+                {{ form.floor }}
+              </div>
 
-      <!-- Line -->
-      <div class="col-md-4 mb-3">
-        {{ form.line.label_tag }}
-        {{ form.line }}
-      </div>
+              <!-- Line -->
+              <div class="col-md-4 mb-3">
+                {{ form.line.label_tag }}
+                {{ form.line }}
+              </div>
               <div class="col-md-4 mb-3">
                 {{ form.mobile_number.label_tag }} {{ form.mobile_number }}
               </div>
@@ -637,23 +637,22 @@
           <div class="tab-pane fade" id="job_experience" role="tabpanel">
             <div class="section-title mb-3"><h5>Job Experience</h5></div>
             <div id="experience-container">
-            <div class="row experience-row align-items-end">
-            <div class="col-md-4 mb-3">{{ form.company_name.label_tag }} {{ form.company_name }}</div>
-            <div class="col-md-4 mb-3">{{ form.department.label_tag }} {{ form.department }}</div>
-            <div class="col-md-4 mb-3">{{ form.designation.label_tag }} {{ form.designation }}</div>
-            <div class="col-md-4 mb-3">{{ form.start_date.label_tag }} {{ form.start_date }}</div>
-            <div class="col-md-4 mb-3">{{ form.end_date.label_tag }} {{ form.end_date }}</div>
-            <div class="col-md-4 mb-3">{{ form.reason_for_leaving.label_tag }} {{ form.reason_for_leaving }}</div>
-            <div class="col-md-4 mb-3">{{ form.experienced.label_tag }} {{ form.experienced }}</div>
-            <div class="col-md-4 mb-3">{{ form.experienced_certificate.label_tag }} {{ form.experienced_certificate }}</div>
-            <div class="col-md-4 mb-3">{{ form.remarks.label_tag }} {{ form.remarks }}</div>
+              <div class="row experience-row align-items-end">
+                <div class="col-md-4 mb-3">{{ form.company_name.label_tag }} {{ form.company_name }}</div>
+                <div class="col-md-4 mb-3">{{ form.department.label_tag }} {{ form.department }}</div>
+                <div class="col-md-4 mb-3">{{ form.designation.label_tag }} {{ form.designation }}</div>
+                <div class="col-md-4 mb-3">{{ form.start_date.label_tag }} {{ form.start_date }}</div>
+                <div class="col-md-4 mb-3">{{ form.end_date.label_tag }} {{ form.end_date }}</div>
+                <div class="col-md-4 mb-3">{{ form.reason_for_leaving.label_tag }} {{ form.reason_for_leaving }}</div>
+                <div class="col-md-4 mb-3">{{ form.experienced.label_tag }} {{ form.experienced }}</div>
+                <div class="col-md-4 mb-3">{{ form.experienced_certificate.label_tag }} {{ form.experienced_certificate }}</div>
+                <div class="col-md-4 mb-3">{{ form.remarks.label_tag }} {{ form.remarks }}</div>
+              </div>
             </div>
-        </div>
 
-        <div class="mb-3">
-        <button type="button" id="add-experience" class="btn btn-success">+</button>
-        </div>
-           
+            <div class="mb-3">
+              <button type="button" id="add-experience" class="btn btn-success">+</button>
+            </div>
           </div>
 
           <!-- ========== Salary Info TAB ========== -->
@@ -755,9 +754,7 @@
             </div>
           </div>
 
-
           <!-- ========== Educations info TAB ========== -->
-
           <div class="tab-pane fade" id="education" role="tabpanel">
             <div class="section-title mb-3"><h5>Educations</h5></div>
 
@@ -771,18 +768,15 @@
                 <div class="col-md-4 mb-3">{{ form.passing_year.label_tag }} {{ form.passing_year }}</div>
                 <div class="col-md-4 mb-3">{{ form.result.label_tag }} {{ form.result }}</div>
                 <div class="col-md-4 mb-3">{{ form.certificate.label_tag }} {{ form.certificate }}</div>
-                <!-- Note: first row should NOT include a remove button -->
               </div>
-          </div>
+            </div>
             <div class="mb-3">
-              <!-- new add button for education -->
               <button type="button" id="add-education" class="btn btn-success">+</button>
             </div>
           </div>
 
-
           <!-- ========== Leave Info ============ -->
-           <div class="tab-pane fade" id="leave" role="tabpanel">
+          <div class="tab-pane fade" id="leave" role="tabpanel">
             <div class="section-title mb-3"><h5>Leave Info</h5></div>
             <div class="row">
               <div class="col-md-4 mb-3">
@@ -905,17 +899,14 @@
                 </div>
                 {{form.salary_policy }}
               </div>
-
             </div>
+          </div>
 
-            </div>
-
-            <!-- ========== Trainig & certificate ======= -->
+          <!-- ========== Training & certificate ======= -->
           <div class="tab-pane fade" id="training" role="tabpanel">
             <div class="section-title mb-3"><h5>Training & Certificate</h5></div>
 
             <div id="training-container">
-              <!-- first row (template row) -->
               <div class="row training-row align-items-end">
                 <div class="col-md-4 mb-3">{{ form.training_name.label_tag }} {{ form.training_name }}</div>
                 <div class="col-md-4 mb-3">{{ form.institue_name.label_tag }} {{ form.institue_name }}</div>
@@ -923,75 +914,58 @@
                 <div class="col-md-4 mb-3">{{ form.score.label_tag }} {{ form.score }}</div>
                 <div class="col-md-4 mb-3">{{ form.remarks.label_tag }} {{ form.remarks }}</div>
                 <div class="col-md-4 mb-3">{{ form.certificate.label_tag }} {{ form.certificate }}</div>
-                <!-- Note: first row should NOT include a remove button -->
               </div>
             </div>
 
             <div class="mb-3">
-              <!-- new add button for education -->
               <button type="button" id="add-training" class="btn btn-success">+</button>
             </div>
           </div>
-            
 
-      
           <!-- ========== Documents TAB ========== -->
           <div class="tab-pane fade" id="document" role="tabpanel">
             <div class="section-title mb-3">
               <h5>Documents</h5>
             </div>
-              <div class="col-full mb-3">
-                <h5
-                  class="d-inline"
-                  style="
-                    background-color: #0d6efd;
-                    color: white;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                  "
-                >
-                  Personal Docs
-                </h5>
+            <div class="col-full mb-3">
+              <h5
+                class="d-inline"
+                style="
+                  background-color: #0d6efd;
+                  color: white;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                "
+              >
+                Personal Docs
+              </h5>
+            </div>
+            <div id="document-container">
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
               </div>
-              <div id="document-container">
-                <!-- first row -->
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+                <div class="col-md-4">
+                  {{ form.certificate }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                 <div class="col-full mb-3">
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
+              </div>
+              <div class="col-full mb-3">
                 <h5
                   class="d-inline"
                   style="
@@ -1004,55 +978,39 @@
                   Education Docs
                 </h5>
               </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+                <div class="col-md-4">
+                  {{ form.certificate }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+                <div class="col-md-4">
+                  {{ form.certificate }}
                 </div>
-                 <div class="col-full mb-3">
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
+              </div>
+              <div class="col-full mb-3">
                 <h5
                   class="d-inline"
                   style="
@@ -1065,31 +1023,23 @@
                   Experienced Docs
                 </h5>
               </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+                <div class="col-md-4">
+                  {{ form.certificate }}
                 </div>
-                 <div class="col-full mb-3">
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
+              </div>
+              <div class="col-full mb-3">
                 <h5
                   class="d-inline"
                   style="
@@ -1102,81 +1052,185 @@
                   Training Docs
                 </h5>
               </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
                 </div>
-                <div class="row document-row align-items-center mb-3">
-                  <!-- Label -->
-                  <div class="col-md-2">
-                    {{ form.certificate.label_tag }}
-                  </div>
-
-                  <!-- File input -->
-                  <div class="col-md-4">
-                    {{ form.certificate }}
-                  </div>
-
+                <div class="col-md-4">
+                  {{ form.certificate }}
                 </div>
-
+              </div>
+              <div class="row document-row align-items-center mb-3">
+                <div class="col-md-2">
+                  {{ form.certificate.label_tag }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.certificate }}
+                </div>
               </div>
             </div>
-
-          
-
-        </div>
-
-        
-
-
-        <!-- ========== BUTTONS ========== -->
-        <div class="row mt-4">
-          <div class="col-md-12 d-flex justify-content-between">
-            <a href="{% url 'employees:list' %}" class="btn btn-secondary">
-              <i class="fas fa-arrow-left"></i> Back to List
-            </a>
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i> Create Employee
-            </button>
           </div>
         </div>
 
-      </form>
-            <script>
-      document.addEventListener('DOMContentLoaded', function() {
-    function setupCascading(parentId, childId, url) {
-        const parent = document.getElementById(parentId);
-        const child = document.getElementById(childId);
+        <!-- ======== TAB NAVIGATION BUTTONS ======== -->
+        <div class="row mt-4">
+          <div class="col-md-12 d-flex justify-content-between">
+            <!-- Back button -->
+            <a href="{% url 'employees:list' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back to List
+            </a>
 
-        parent.addEventListener('change', function() {
-            const value = parent.value;
-            fetch(`${url}?${parentId}=${value}`)
-                .then(response => response.json())
-                .then(data => {
+            <!-- NEXT Button -->
+            <button type="button" class="btn btn-primary" id="nextBtn">
+              Next <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <!-- SAVE Button (hidden except on last tab) -->
+            <button type="submit" class="btn btn-success d-none" id="saveBtn">
+              <i class="fas fa-save"></i> Save Employee
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- ========================== JAVASCRIPT ========================== -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // ========== TAB NAVIGATION LOGIC ==========
+          const tabButtons = document.querySelectorAll('#employeeTab .nav-link');
+          const nextBtn = document.getElementById('nextBtn');
+          const saveBtn = document.getElementById('saveBtn');
+          
+          // Array of tab IDs in order
+          const tabOrder = [
+            'employee-tab',
+            'basic-tab',
+            'offical_info-tab',
+            'job_experience-tab',
+            'salary_info-tab',
+            'education-tab',
+            'leave-tab',
+            'training-tab',
+            'document-tab'
+          ];
+          
+          // Function to get current active tab index
+          function getCurrentTabIndex() {
+            for (let i = 0; i < tabOrder.length; i++) {
+              const tab = document.getElementById(tabOrder[i]);
+              if (tab && tab.classList.contains('active')) {
+                return i;
+              }
+            }
+            return 0;
+          }
+          
+          // Function to show/hide Next and Save buttons
+          function updateButtons() {
+            const currentIndex = getCurrentTabIndex();
+            const isLastTab = currentIndex === tabOrder.length - 1;
+            
+            if (isLastTab) {
+              nextBtn.classList.add('d-none');
+              saveBtn.classList.remove('d-none');
+            } else {
+              nextBtn.classList.remove('d-none');
+              saveBtn.classList.add('d-none');
+            }
+          }
+          
+          // Optional: Validate current tab before moving to next
+          function validateCurrentTab() {
+            const currentIndex = getCurrentTabIndex();
+            const currentTabPaneId = tabOrder[currentIndex].replace('-tab', '');
+            const currentPane = document.getElementById(currentTabPaneId);
+            
+            if (!currentPane) return true;
+            
+            // Get all required fields in current tab
+            const requiredFields = currentPane.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+              if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+              } else {
+                field.classList.remove('is-invalid');
+              }
+            });
+            
+            return isValid;
+          }
+          
+          // Next button click handler
+          nextBtn.addEventListener('click', function() {
+            // Optional: Uncomment below to enable validation
+            // if (!validateCurrentTab()) {
+            //   alert('Please fill in all required fields before proceeding.');
+            //   return;
+            // }
+            
+            const currentIndex = getCurrentTabIndex();
+            
+            // Check if there's a next tab
+            if (currentIndex < tabOrder.length - 1) {
+              const nextTabId = tabOrder[currentIndex + 1];
+              const nextTabButton = document.getElementById(nextTabId);
+              
+              if (nextTabButton) {
+                // Trigger Bootstrap tab show
+                const tab = new bootstrap.Tab(nextTabButton);
+                tab.show();
+                
+                // Scroll to top of form
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Update buttons
+                updateButtons();
+              }
+            }
+          });
+          
+          // Listen to tab change events to update buttons
+          tabButtons.forEach(button => {
+            button.addEventListener('shown.bs.tab', function() {
+              updateButtons();
+            });
+          });
+          
+          // Initialize button state
+          updateButtons();
+          
+          // ========== CASCADING DROPDOWN LOGIC ==========
+          function setupCascading(parentId, childId, url) {
+            const parent = document.getElementById(parentId);
+            const child = document.getElementById(childId);
+
+            if (parent && child) {
+              parent.addEventListener('change', function() {
+                const value = parent.value;
+                fetch(`${url}?${parentId}=${value}`)
+                  .then(response => response.json())
+                  .then(data => {
                     child.innerHTML = '';
                     child.insertAdjacentHTML('beforeend', '<option value="">---------</option>');
                     data[childId].forEach(item => {
-                        child.insertAdjacentHTML('beforeend', `<option value="${item.id}">${item.name}</option>`);
+                      child.insertAdjacentHTML('beforeend', `<option value="${item.id}">${item.name}</option>`);
                     });
-                });
-        });
-    }
+                  })
+                  .catch(error => console.error('Error loading data:', error));
+              });
+            }
+          }
 
-    setupCascading('id_unit', 'id_division', '{% url "employees:ajax_load_divisions" %}');
-    setupCascading('id_division', 'id_department', '{% url "employees:ajax_load_departments" %}');
-    setupCascading('id_department', 'id_section', '{% url "employees:ajax_load_sections" %}');
-    setupCascading('id_section', 'id_sub_section', '{% url "employees:ajax_load_sub_sections" %}');
-    setupCascading('id_sub_section', 'id_floor', '{% url "employees:ajax_load_floors" %}');
-    setupCascading('id_floor', 'id_line', '{% url "employees:ajax_load_lines" %}');
-});
+          setupCascading('id_unit', 'id_division', '{% url "employees:ajax_load_divisions" %}');
+          setupCascading('id_division', 'id_department', '{% url "employees:ajax_load_departments" %}');
+          setupCascading('id_department', 'id_section', '{% url "employees:ajax_load_sections" %}');
+          setupCascading('id_section', 'id_sub_section', '{% url "employees:ajax_load_sub_sections" %}');
+          setupCascading('id_sub_section', 'id_floor', '{% url "employees:ajax_load_floors" %}');
+          setupCascading('id_floor', 'id_line', '{% url "employees:ajax_load_lines" %}');
+        });
       </script>
     </div>
   </div>
@@ -1201,6 +1255,12 @@
   }
   .btn {
     min-width: 150px;
+  }
+  .is-invalid {
+    border-color: #dc3545 !important;
+  }
+  .is-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
   }
 </style>
 {% endblock %}
