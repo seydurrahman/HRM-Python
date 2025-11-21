@@ -176,7 +176,7 @@ class Employee(models.Model):
         related_name='subordinates'
     )
     work_shift = models.CharField(max_length=50, blank=True, null=True, choices=WORK_SHIFT, default='GENERAL-8')
-    weekend = MultiSelectField(max_length=50, blank=True, null=True, choices=WEEKEND, default='FRIDAY')
+    weekend = models.CharField(max_length=50, blank=True, null=True, choices=WEEKEND, default='FRIDAY')
     disburse_type = models.CharField(max_length=50, blank=True, null=True)
     mfs_number = models.CharField(max_length=50, blank=True, null=True)
     # mobile number field is already defined above
@@ -322,23 +322,23 @@ class EducationRecord(models.Model):
     def __str__(self):
         return f"{self.employee.employee_id} - {self.degree_title}"
 
-class WorkExperience(models.Model):
-    """Previous Work Experience"""
+# class WorkExperience(models.Model):
+#     """Previous Work Experience"""
     
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='work_experiences')
-    company_name = models.CharField(max_length=200)
-    job_title = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    responsibilities = models.TextField()
-    reason_for_leaving = models.TextField(blank=True)
+#     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='work_experiences')
+#     company_name = models.CharField(max_length=200)
+#     job_title = models.CharField(max_length=100)
+#     start_date = models.DateField()
+#     end_date = models.DateField(null=True, blank=True)
+#     responsibilities = models.TextField()
+#     reason_for_leaving = models.TextField(blank=True)
     
-    class Meta:
-        db_table = 'work_experiences'
-        ordering = ['-start_date']
+#     class Meta:
+#         db_table = 'work_experiences'
+#         ordering = ['-start_date']
     
-    def __str__(self):
-        return f"{self.employee.employee_id} - {self.company_name}"
+#     def __str__(self):
+#         return f"{self.employee.employee_id} - {self.company_name}"
 
 class Dependent(models.Model):
     """Employee Dependents/Family Members"""

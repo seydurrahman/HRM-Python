@@ -39,7 +39,7 @@ class EmployeeForm(forms.ModelForm):
             "floor": forms.Select(attrs={"class": "form-control"}),
             "line": forms.Select(attrs={"class": "form-control"}),
             "photo": forms.FileInput(attrs={"class": "form-control"}),
-            "weekend": forms.SelectMultiple(attrs={"class": "form-control"}),
+            "weekend": forms.Select(attrs={"class": "form-control"}),
         }
 
     def __init__(self, *args, **kwargs):

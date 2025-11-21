@@ -353,32 +353,41 @@
               <div class="col-md-4 mb-3">
                 {{ form.country.label_tag }} {{ form.country }}
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.division.label_tag }} {{ form.division }}
+              <div class="col-md-4 mb-3" id="perm-division">
+                <label for="id_perm_division">Division</label>
+                <input type="text" name="perm_division" id="id_perm_division" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.district.label_tag }} {{ form.district }}
+              <div class="col-md-4 mb-3" id="perm-district">
+                <label for="id_perm_district">District</label>
+                <input type="text" name="perm_district" id="id_perm_district" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.thana.label_tag }} {{ form.thana }}
+              <div class="col-md-4 mb-3" id="perm-thana">
+                <label for="id_perm_thana">Thana</label>
+                <input type="text" name="perm_thana" id="id_perm_thana" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.post_office.label_tag }} {{ form.post_office }}
+              <div class="col-md-4 mb-3" id="perm-post-office">
+                <label for="id_perm_post_office">Post Office</label>
+                <input type="text" name="perm_post_office" id="id_perm_post_office" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.post_office_Bangla.label_tag }} {{form.post_office_Bangla }}
+              <div class="col-md-4 mb-3" id="perm-post-office-bangla">
+                <label for="id_perm_post_office_bangla">Post Office (Bangla)</label>
+                <input type="text" name="perm_post_office_bangla" id="id_perm_post_office_bangla" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.postal_code.label_tag }} {{ form.postal_code }}
+              <div class="col-md-4 mb-3" id="perm-postal-code">
+                <label for="id_perm_postal_code">Postal Code</label>
+                <input type="text" name="perm_postal_code" id="id_perm_postal_code" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.village.label_tag }} {{ form.village }}
+              <div class="col-md-4 mb-3" id="perm-village">
+                <label for="id_perm_village">Village</label>
+                <input type="text" name="perm_village" id="id_perm_village" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.address_line.label_tag }} {{ form.address_line }}
+              <div class="col-md-4 mb-3" id="perm-address-line">
+                <label for="id_perm_address_line">Address Line</label>
+                <input type="text" name="perm_address_line" id="id_perm_address_line" class="form-control">
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.address_line_Bangla.label_tag }} {{form.address_line_Bangla }}
+              <div class="col-md-4 mb-3" id="perm-address-line-bangla">
+                <label for="id_perm_address_line_bangla">Address Line (Bangla)</label>
+                <input type="text" name="perm_address_line_bangla" id="id_perm_address_line_bangla" class="form-control">
               </div>
               <div class="col-full mb-3">
                 <h5
@@ -392,9 +401,16 @@
                 >
                   Permanent Address
                 </h5>
+                <div class="form-check d-inline-block ms-3">
+                  <input class="form-check-input" type="checkbox" id="sameAsPresent">
+                  <label class="form-check-label" for="sameAsPresent">
+                    Same as Present Address
+                  </label>
+                </div>
               </div>
-              <div class="col-md-4 mb-3">
-                {{ form.country.label_tag }} {{ form.country }}
+              <div class="col-md-4 mb-3" id="perm-country">
+                <label for="id_perm_country">Country</label>
+                <input type="text" name="perm_country" id="id_perm_country" class="form-control">
               </div>
               <div class="col-md-4 mb-3">
                 {{ form.division.label_tag }} {{ form.division }}
@@ -1230,6 +1246,76 @@
           setupCascading('id_section', 'id_sub_section', '{% url "employees:ajax_load_sub_sections" %}');
           setupCascading('id_sub_section', 'id_floor', '{% url "employees:ajax_load_floors" %}');
           setupCascading('id_floor', 'id_line', '{% url "employees:ajax_load_lines" %}');
+          
+          // ========== COPY PRESENT TO PERMANENT ADDRESS ==========
+          const sameAsPresent = document.getElementById('sameAsPresent');
+          
+          // Mapping of present address fields to permanent address fields
+          const addressMapping = {
+            'id_country': 'id_perm_country',
+            'id_division': 'id_perm_division',
+            'id_district': 'id_perm_district',
+            'id_thana': 'id_perm_thana',
+            'id_post_office': 'id_perm_post_office',
+            'id_post_office_Bangla': 'id_perm_post_office_bangla',
+            'id_postal_code': 'id_perm_postal_code',
+            'id_village': 'id_perm_village',
+            'id_address_line': 'id_perm_address_line',
+            'id_address_line_Bangla': 'id_perm_address_line_bangla'
+          };
+          
+          // Function to copy present address to permanent address
+          function copyPresentToPermanent() {
+            for (const [presentId, permanentId] of Object.entries(addressMapping)) {
+              const presentField = document.getElementById(presentId);
+              const permanentField = document.getElementById(permanentId);
+              
+              if (presentField && permanentField) {
+                if (sameAsPresent.checked) {
+                  // Copy value and disable permanent field
+                  if (presentField.tagName === 'SELECT') {
+                    permanentField.value = presentField.value;
+                    // If permanent is also a select, trigger change event
+                    permanentField.dispatchEvent(new Event('change'));
+                  } else {
+                    permanentField.value = presentField.value;
+                  }
+                  permanentField.readOnly = true;
+                  permanentField.style.backgroundColor = '#e9ecef';
+                } else {
+                  // Enable permanent field for editing
+                  permanentField.readOnly = false;
+                  permanentField.style.backgroundColor = '';
+                }
+              }
+            }
+          }
+          
+          // Event listener for checkbox
+          if (sameAsPresent) {
+            sameAsPresent.addEventListener('change', copyPresentToPermanent);
+            
+            // Also listen to changes in present address fields when checkbox is checked
+            Object.keys(addressMapping).forEach(presentId => {
+              const presentField = document.getElementById(presentId);
+              if (presentField) {
+                presentField.addEventListener('input', function() {
+                  if (sameAsPresent.checked) {
+                    copyPresentToPermanent();
+                  }
+                });
+                
+                // For select fields, listen to change event
+                if (presentField.tagName === 'SELECT') {
+                  presentField.addEventListener('change', function() {
+                    if (sameAsPresent.checked) {
+                      copyPresentToPermanent();
+                    }
+                  });
+                }
+              }
+            });
+          }
         });
       </script>
     </div>

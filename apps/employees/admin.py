@@ -1,13 +1,13 @@
 from django.contrib import admin
-from .models import Employee, EducationRecord, WorkExperience, Dependent
+from .models import Employee, EducationRecord, Dependent
 
 class EducationRecordInline(admin.TabularInline):
     model = EducationRecord
     extra = 1
 
-class WorkExperienceInline(admin.TabularInline):
-    model = WorkExperience
-    extra = 1
+# class WorkExperienceInline(admin.TabularInline):
+#     model = WorkExperience
+#     extra = 1
 
 class DependentInline(admin.TabularInline):
     model = Dependent
@@ -22,7 +22,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ['employee_id', 'user__first_name', 'user__last_name', 
                      'user__email', 'mobile_number']
     readonly_fields = ['employee_id', 'created_at', 'updated_at']
-    inlines = [EducationRecordInline, WorkExperienceInline, DependentInline]
+    inlines = [EducationRecordInline, DependentInline]
     
     fieldsets = (
         ('User Information', {
@@ -36,15 +36,14 @@ class EmployeeAdmin(admin.ModelAdmin):
                       'emergency_contact_number', 'emergency_contact_relation')
         }),
         ('Address', {
-            'fields': ('present_address', 'permanent_address', 'city', 'state', 
-                      'postal_code', 'country')
+            'fields': ('postal_code', 'country')
         }),
         ('Employment Details', {
             'fields': ('department', 'designation', 'employment_type', 'date_of_joining', 
                       'date_of_confirmation', 'probation_period_months', 'reporting_manager')
         }),
         ('Documents', {
-            'fields': ('national_id', 'passport_number', 'tin_number')
+            'fields': ('passport_number', 'tin_number')
         }),
         ('Bank Details', {
             'fields': ('bank_name', 'bank_account_number', 'bank_branch')
